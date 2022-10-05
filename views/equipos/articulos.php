@@ -81,6 +81,7 @@
 													<th>Modelo</th>
 													<th>Ubicacion</th>
 													<th>Guia</th>
+													<th>Reporte</th>
 													<th>Cliente</th>
 													<th>Estado</th>
 													<th>Acción</th>
@@ -99,6 +100,11 @@
 															<a href="../../views/equipos/articulosUtils/exportarGuia.php?id='.$fila['id'].'" class="btn btn-primary btn-sm" target="_blank">
 																<span class="mdi mdi-file-pdf"></span>
 															</a>
+														</td>
+														<td title="Generar Reporte">
+															<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg2" title="Generar Reporte" '.$editar.'>
+																<span class="mdi mdi-book-open-page-variant"></span>
+															</button>
 														</td>
 														<td>'.$fila['cliente'].'</td>
 														<td>
