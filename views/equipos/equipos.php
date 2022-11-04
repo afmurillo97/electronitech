@@ -17,7 +17,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Corona · Equipos</title>
+	<title>Equipos</title>
 	<!-- HEAD -->
 	<?php include_once '../layouts/head.php'; ?>
 	<!-- END HEAD -->
@@ -74,22 +74,27 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular equipos');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Foto</th>
-													<th>Marca</th>
-													<th>Modelo</th>
-													<th>Registro</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th class="no-sort">Foto</th>
+															<th>Marca</th>
+															<th>Modelo</th>
+															<th>Registro</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
-											foreach (getEquipos($inicial, $cantPagina) as $fila) {												
+											foreach (getEquipos($inicial, $cantPagina) as $fila) {		
+												$documento=$fila['documento'];
+												$urlFotoEquipo = explode('electronitech/', $documento);
+												$fotoEquipo = !empty($fila['documento']) ? '<a target="_blank" href="http://'.$fila['documento'].'"><img src="../../'.$urlFotoEquipo[1].'" alt="" width="10" height="10"></a>' : '';									
 												echo '
 													<tr>
 														<input type="hidden" class="idEquipo" value="'.$fila['id'].'">
-														<td><a href="'.$fila['documento'].'"><span class="mdi mdi-file-pdf"></span></a></td>
+														<td>'.$fotoEquipo.'</td>
 														<td>'.$fila['marca'].'</td>
 														<td>'.$fila['modelo'].'</td>
 														<td>'.$fila['registro'].'</td>

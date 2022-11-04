@@ -14,7 +14,7 @@
 						<label class="col-sm-3 col-form-label">Categoria</label>
 						<div class="col-sm-9">
 							<select class="form-control" id="idCategoria">
-								<option value="-1">Seleccione</option>
+								<option value="-1">SELECCIONE</option>
 								<?php 
 									foreach (getCategorias() as $fila) {
 										echo '<option value="'.$fila['id'].'">'.$fila['descripcion'].'</option>';

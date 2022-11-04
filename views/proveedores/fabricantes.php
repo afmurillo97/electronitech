@@ -56,7 +56,7 @@
 								<div class="card-body">
 									<form class="nav-link" id="buscar" action="#" method="POST">
 										<input type="hidden" name="accion" value="buscador">
-										<input type="text" id="entrada" name="termino" class="form-control" placeholder="Ingrese Proveedor">
+										<input type="text" id="entrada" name="termino" class="form-control" placeholder="Ingrese Fabricante">
 									</form>
 
 									<div id="resultado" class="table-responsive">
@@ -74,16 +74,18 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular fabricantes');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Nombre</th>
-													<th>Celular</th>
-													<th>Dirección</th>
-													<th>Ciudad</th>
-													<th>E-mail</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Nombre</th>
+															<th>Celular</th>
+															<th>Dirección</th>
+															<th>Ciudad</th>
+															<th>E-mail</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>	
+													</thead>
 											';
 
 											foreach (getFabricantes($inicial, $cantPagina) as $fila) {

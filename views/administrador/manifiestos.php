@@ -74,22 +74,25 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular manifiestos');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Manifiesto</th>
-													<th>Documento</th>
-													<th>Descripción</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Manifiesto</th>
+															<th class="no-sort">Documento</th>
+															<th>Descripción</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
 											foreach (getManifiestos($inicial, $cantPagina) as $fila) {
+												$manifiesto = !empty($fila['documento']) ? '<a target="_blank" href="http://'.$fila['documento'].'"><span class="mdi mdi-file-pdf"></span></a>' : '';
 												echo '
 													<tr>
 														<input type="hidden" class="idManifiesto" value="'.$fila['id'].'">
 														<td>'.$fila['nombre'].'</td>
-														<td><a href="'.$fila['documento'].'"><span class="mdi mdi-file-pdf"></span></a></td>
+														<td>'.$manifiesto.'</td>
 														<td>'.$fila['descripcion'].'</td>
 														<td>
 															<div class="custom-control custom-switch" '.$anular.'>

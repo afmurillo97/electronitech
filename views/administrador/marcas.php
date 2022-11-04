@@ -74,13 +74,15 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular marcas');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Nombre</th>
-													<th>Descripción</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Nombre</th>
+															<th>Descripción</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
 											foreach (getMarcas($inicial, $cantPagina) as $fila) {

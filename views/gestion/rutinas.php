@@ -74,13 +74,15 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular rutinas');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Categoria</th>
-													<th>Descripción</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Categoria</th>
+															<th>Descripción</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
 											foreach (getRutinas($inicial, $cantPagina) as $fila) {

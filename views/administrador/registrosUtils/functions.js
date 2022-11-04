@@ -21,12 +21,13 @@ function nuevoRegistro() {
 		contentType: false,
 		processData: false,
 		success: function(resultado) {
-			if (resultado) {
-				jQuery.noConflict();
+			jQuery.noConflict();
+
+			if (resultado==1) {
 				$('#modalCreateSuccess').modal('show');
 
 				setTimeout(() => {
-					location.reload();					
+					location.reload();
 				}, 1050);
 			}else{
 				$('#modalDanger').modal('show');
@@ -122,9 +123,10 @@ function editarRegistro() {
 		contentType: false,
 		processData: false,
 		success: function(resultado) {
-			if (resultado) {
-				jQuery.noConflict();
-				$('#modalEditSuccess').modal('show');
+			jQuery.noConflict();
+
+			if (resultado==1) {
+				$('#modalCreateSuccess').modal('show');
 
 				setTimeout(() => {
 					location.reload();

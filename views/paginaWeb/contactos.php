@@ -60,9 +60,9 @@
 										$cantPagina=10;
 										$inicial=($actual-1)*$cantPagina;
 
-										if (getTipoEquipo($inicial, $cantPagina)) {
-											$editar=permisosItem($_SESSION['idUsuario'], 'editar tipoEquipo');
-											$anular=permisosItem($_SESSION['idUsuario'], 'anular tipoEquipo');
+										if (getContactos($inicial, $cantPagina)) {
+											$editar=permisosItem($_SESSION['idUsuario'], 'editar contactos');
+											$anular=permisosItem($_SESSION['idUsuario'], 'anular contactos');
 
 											echo '
 												<table class="table table-hover">
@@ -76,14 +76,14 @@
 												</tr>
 											';
 
-											foreach (getTipoEquipo($inicial, $cantPagina) as $fila) {
+											foreach (getContactos($inicial, $cantPagina) as $fila) {
 												echo '
 													<tr>
-														<input type="hidden" class="idTipoEquipo" value="'.$fila['id'].'">
+														<input type="hidden" class="idContactos" value="'.$fila['id'].'">
 														<td>'.$fila['nombre'].'</td>
-														<td>'.$fila['riesgo'].'</td>
-														<td>'.$fila['descripcion'].'</td>
-														<td>'.$fila['protocolo'].'</td>
+														<td>'.$fila['email'].'</td>
+														<td>'.$fila['asunto'].'</td>
+														<td>'.$fila['mensaje'].'</td>
 														<td>
 															<div class="custom-control custom-switch" '.$anular.'>
 																<input type="checkbox" class="custom-control-input checkbox" id="customSwitch'.$fila['id'].'" checked>
@@ -91,7 +91,7 @@
 															</div>
 														</td>
 														<td>
-															<button type="button" class="btn btn-warning btn-sm formEditarTipoEquipo" data-toggle="modal" data-target="#exampleModal" title="Editar Tipo de Equipo" '.$editar.'>
+															<button type="button" class="btn btn-warning btn-sm formEditarContactos" data-toggle="modal" data-target="#exampleModal" title="Editar Contacto" '.$editar.'>
 																<span class="mdi mdi-pencil"></span>
 															</button>
 														</td>
@@ -105,7 +105,7 @@
 											';
 											for ($i=1; $i<=$paginas; $i++) {
 												$active=$actual==$i ? 'active' : '';
-												echo '<li class="page-item '.$active.'"><a class="page-link" href="tipoEquipo.php?pagina='.$i.'">'.$i.'</a></li>';
+												echo '<li class="page-item '.$active.'"><a class="page-link" href="contactos.php?pagina='.$i.'">'.$i.'</a></li>';
 											}
 											echo '
 													</ul>

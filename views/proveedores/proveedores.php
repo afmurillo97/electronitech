@@ -74,19 +74,22 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular proveedores');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Nombre</th>
-													<th>Nit</th>
-													<th>Representante</th>
-													<th>Dirección</th>
-													<th>Celular</th>
-													<th>Ciudad</th>
-													<th>E-mail</th>
-													<th>Régimen</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Nombre</th>
+															<th>Nit</th>
+															<th>Representante</th>
+															<th>Dirección</th>
+															<th>Celular</th>
+															<th>Ciudad</th>
+															<th>E-mail</th>
+															<th>Régimen</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
+												
 											';
 
 											foreach (getProveedores($inicial, $cantPagina) as $fila) {

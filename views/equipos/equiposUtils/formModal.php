@@ -63,7 +63,7 @@
 							</div>
 
 							<div class="form-group row">
-								<label class="col-sm-3 col-form-label">Registro Invima</label>
+								<label class="col-sm-3 col-form-label">Tipo Registro Invima</label>
 								<div class="col-sm-9">
 									<select class="form-control form-control-sm" id="idRegistro">
 										<option value="NaN">Seleccione</option>
@@ -75,7 +75,7 @@
 							</div>
 
 							<div class="form-group row">
-								<label class="col-sm-3 col-form-label">Vida Util</label>
+								<label class="col-sm-3 col-form-label">Vida Util (Años)</label>
 								<div class="col-sm-9">
 									<input type="text" class="form-control form-control-sm" id="vidaUtil" placeholder="Vida Util">
 								</div>
@@ -200,7 +200,7 @@
 									<td>
 										<select class="form-control form-control-sm unidad">
 											<option value="NaN">Seleccione</option>
-											<option value="G">G</option>
+											<option value="G">g</option>
 											<option value="Kg">Kg</option>
 										</select>
 									</td>

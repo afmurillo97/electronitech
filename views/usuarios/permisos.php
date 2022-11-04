@@ -17,11 +17,11 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Corona · Permisos</title>
+	<title>Permisos</title>
 	<!-- HEAD -->
 	<?php include_once '../layouts/head.php'; ?>
 	<!-- END HEAD -->
-	<script src="permisosUtils/functions.js"></script>
+	<script src="permisosUtils/functions.js"></script>	
 </head>
 <body>
 	<div class="container-scroller">
@@ -74,12 +74,14 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular permisos');
 
 											echo '
-												<table class="table table-hover">
-													<tr>
-														<th>Nombre</th>
-														<th>Descripción</th>
-														<th>Acción</th>
-													</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Nombre</th>
+															<th>Descripción</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 											foreach (getPermisos($inicial, $cantPagina) as $fila) {
 												echo '

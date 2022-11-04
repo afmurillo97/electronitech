@@ -21,11 +21,11 @@
 						<div class="col-sm-9">
 							<select class="form-control" id="riesgo">
 								<option value="-1">Seleccione</option>
-								<option value="noAplica">NO APLICA</option>
-								<option value="I">I</option>
-								<option value="IIA">IIA</option>
-								<option value="IIB">IIB</option>
-								<option value="III">III</option>
+								<option value="NO APLICA">NO APLICA</option> <!-- sin color -->
+								<option value="I">I</option> <!-- verde -->
+								<option value="IIA">IIA</option><!-- amarillo -->
+								<option value="IIB">IIB</option><!-- rojo -->
+								<option value="III">III</option><!-- morado? -->
 							</select>
 						</div>
 					</div>

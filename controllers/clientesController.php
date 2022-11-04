@@ -76,25 +76,19 @@
 		if(isset($_POST['accion'])) {
 			switch ($_POST['accion']) {
 				case 'ingresar':
-					$filename = $_FILES['logo']['name'];
-					$urlLogo = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/logos/'.$filename;
-					// $urlLogo = $_SERVER['SERVER_NAME'].'/assets/images/firmas/'.$filename;
-					$urlUpload = '../assets/images/logos/'.basename($filename);
-					$tmp_name = $_FILES['logo']['tmp_name'];
+					if(isset($_FILES['logo'])){
+						$filename = $_FILES['logo']['name'];
+						$base = 'assets/images/logosClientes/logo_'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+						$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+						$urlUpload = '../'.$base;
+						$tmp_name = $_FILES['logo']['tmp_name'];
+						
+						if(move_uploaded_file($tmp_name, $urlUpload)) {
+							$sql=$con->prepare('INSERT INTO clientes (nombre, nit, codigo, juridica, representante, direccion, telefono, celular, email, observacion, logo, encabezado) VALUES (:P1,:P2,:P3,:P4,:P5,:P6,:P7,:P8,:P9,:P10,:P11,:P12)');
+							$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['nit'], 'P3'=>$_POST['codigo'], 'P4'=>$_POST['juridica'], 'P5'=>$_POST['representante'], 'P6'=>$_POST['direccion'], 'P7'=>$_POST['telefono'], 'P8'=>$_POST['celular'], 'P9'=>$_POST['email'], 'P10'=>$_POST['observacion'], 'P11'=>$urlBD, 'P12'=>$_POST['encabezado']));
+							$num=$sql->rowCount();
 
-					$filename2 = $_FILES['imgEncabezado']['name'];
-					$urlEncabezado = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/encabezados/'.$filename2;
-					// $urlEncabezado = $_SERVER['SERVER_NAME'].'/assets/images/firmas/'.$filename;
-					$urlUpload2 = '../assets/images/encabezados/'.basename($filename2);
-					$tmp_name2 = $_FILES['imgEncabezado']['tmp_name'];
-
-					$sql=$con->prepare('INSERT INTO clientes (nombre, nit, codigo, juridica, representante, direccion, telefono, celular, email, observacion, logo, encabezado, imgEncabezado) VALUES (:P1,:P2,:P3,:P4,:P5,:P6,:P7,:P8,:P9,:P10,:P11,:P12,:P13)');
-					$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['nit'], 'P3'=>$_POST['codigo'], 'P4'=>$_POST['juridica'], 'P5'=>$_POST['representante'], 'P6'=>$_POST['direccion'], 'P7'=>$_POST['telefono'], 'P8'=>$_POST['celular'], 'P9'=>$_POST['email'], 'P10'=>$_POST['observacion'], 'P11'=>$urlLogo, 'P12'=>$_POST['encabezado'], 'P13'=>$urlEncabezado));
-					$num=$sql->rowCount();
-
-					if ($num>=1) {
-						if(move_uploaded_file($tmp_name, $urlLogo)) {
-							if(move_uploaded_file($tmp_name2, $urlEncabezado)) {
+							if ($num>=1) {
 								echo TRUE;
 							}else{
 								echo FALSE;
@@ -102,8 +96,17 @@
 						}else{
 							echo FALSE;
 						}
-					}else{
-						echo FALSE;
+						
+					}else {
+						$sql=$con->prepare('INSERT INTO clientes (nombre, nit, codigo, juridica, representante, direccion, telefono, celular, email, observacion, encabezado) VALUES (:P1,:P2,:P3,:P4,:P5,:P6,:P7,:P8,:P9,:P10,:P11)');
+						$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['nit'], 'P3'=>$_POST['codigo'], 'P4'=>$_POST['juridica'], 'P5'=>$_POST['representante'], 'P6'=>$_POST['direccion'], 'P7'=>$_POST['telefono'], 'P8'=>$_POST['celular'], 'P9'=>$_POST['email'], 'P10'=>$_POST['observacion'], 'P11'=>$$_POST['encabezado']));
+						$num=$sql->rowCount();
+
+						if ($num>=1) {
+							echo TRUE;
+						}else{
+							echo FALSE;
+						}
 					}
 					break;
 				case 'buscador':
@@ -124,20 +127,27 @@
 									<th>Dirección</th>
 									<th>Telefono</th>
 									<th>E-mail</th>
+									<th>Logo</th>
 									<th>Estado</th>
 									<th>Acción</th>
 								</tr>
 						';
 						foreach ($resultado as $fila) {
 							$checked=($fila['fechaEliminacion']==NULL) ? 'checked' : '';
+							$logo = !empty($fila['logo']) ? '<a target="_blank" href="http://'.$fila['logo'].'"><span class="mdi mdi-file-pdf"></span></a>' : '';
+
+							$direccion=json_decode($fila['direccion'])[0];
+							$direccionYciudad = explode('@', $direccion);
+
 							echo '
 								<tr>
 									<input type="hidden" class="idCliente" value="'.$fila['id'].'">
 									<td>'.$fila['nombre'].'</td>
 									<td>'.$fila['nit'].'</td>
-									<td>'.json_decode($fila['direccion'])[0].'</td>
+									<td>'.$direccionYciudad[0].', '.$direccionYciudad[1].'</td>
 									<td>'.$fila['telefono'].'</td>
 									<td>'.$fila['email'].'</td>
+									<td>'.$logo.'</td>
 									<td>
 										<div class="custom-control custom-switch" '.$anular.'>
 											<input type="checkbox" class="custom-control-input checkbox" id="customSwitch'.$fila['id'].'" '.$checked.'>
@@ -228,9 +238,9 @@
 													<div class="col-sm-9">
 														<select class="form-control" id="juridica">														
 															<option value="'.$fila['juridica'].'">'.$fila['juridica'].'</option>
-															<option value="publica">Publica</option>
-															<option value="mixta">Mixta</option>
-															<option value="privada">Privada</option>
+															<option value="PUBLICA">PUBLICA</option>
+															<option value="MIXTA">MIXTA</option>
+															<option value="PRIVADA">PRIVADA</option>
 														</select>
 													</div>
 												</div>
@@ -265,24 +275,39 @@
 												</div>
 											</div>
 
-											<div class="col direcciones">
+											<div class="col direcciones">												
 												<div class="form-group">
-													<label class="col-sm-3 col-form-label">Dirección</label>
+													<label class="col-sm-3 col-form-label"></label>
 													<div class="col-sm-9 form-inline">';
 														$cantidad=count(json_decode($fila['direccion']));
 														$direccion = json_decode($fila['direccion']);
+														$direccionYciudad = explode('@', $direccion[0]);	
 
-														echo '<input type="text" class="form-control" id="direccion_1" value="'.$direccion[0].'">&nbsp;
-														<button type="button" class="btn btn-primary nuevaDireccion" data-numero="'.$cantidad.'">+</button>
-													</div>
-												</div>';
+														echo '
+														<input type="hidden" class="arreglo" value="'.str_replace('"', "'", json_encode($direccion)).'">
+														<div class="form-row">
+															<div class="form-group col-sm-6">
+																<label for="">Dirección</label>
+																<input type="text" class="form-control col-sm-12" id="direccion_1" value="'.$direccionYciudad[0].'">&nbsp;
+															</div>
+															<div class="form-group col-sm-5">
+																<label for="">Ciudad</label>
+																<input type="text" class="form-control col-sm-12" id="ciudad_1" value="'.$direccionYciudad[1].'">&nbsp;
+															</div>
+															<div class="form-group col-sm-1">
+																<button type="button" class="btn btn-primary nuevaDireccion" data-numero="'.$cantidad.'">+</button>
+															</div>
+														</div>';
 
-												for ($i=1; $i<$cantidad; $i++) {
-													$j=$i+1;
-													echo '<div class="form-group"><div class="col-sm-9 form-inline"><input type="text" class="form-control" id="direccion_'.$j.'" value="'.$direccion[$i].'"></div></div>';
-												}
-													
-										echo '</div>
+														for ($i=1; $i<$cantidad; $i++) {
+															$direccionYciudad2 = explode('@', $direccion[$i]);
+						
+															echo '<div class="form-row"><div class="form-group col-sm-6"><label for="">&nbsp;</label><input type="text" class="form-control col-sm-12" id="direccion_'.($i+1).'" value="'.$direccionYciudad2[0].'"></div><div class="form-group col-sm-5"><label for="">&nbsp;</label><input type="text" class="form-control col-sm-12" id="ciudad_'.($i+1).'" value="'.$direccionYciudad2[1].'"></div><div class="form-group col-sm-1"><button type="button" class="btn btn-danger eliminarFila" id="'.$i.'">x</button></div></div>';
+														}
+
+												echo '</div>
+												</div>
+											</div>
 
 											<div class="col">
 												<div class="form-group">
@@ -321,21 +346,13 @@
 													<div class="col-sm-9">
 														<select class="form-control" id="encabezado">
 															<option value="'.$fila['encabezado'].'">'.$fila['encabezado'].'</option>
-															<option value="si">Si</option>
-															<option value="no">No</option>
+															<option value="SI">SI</option>
+															<option value="NO">NO</option>
 														</select>
 													</div>
 												</div>
 											</div>
 
-											<div class="col">
-												<div class="form-group">
-													<label class="col-sm-6 col-form-label">Imagen Encabezado</label>
-													<div class="col-sm-9">
-														<input type="file" class="form-control" id="imgEncabezado">
-													</div>
-												</div>
-											</div>
 										</div>
 
 										<button type="button" class="btn btn-primary mr-2" id="editarCliente" data-dismiss="modal">Guardar</button>
@@ -349,42 +366,36 @@
 					}
 					break;
 				case 'editar':
-					if(!empty($_FILES['logo']['type'])){
+					if(isset($_FILES['logo'])){
 						$filename = $_FILES['logo']['name'];
-						$urlLogo = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/logos/'.$filename;
-						// $urlLogo = $_SERVER['SERVER_NAME'].'/assets/images/firmas/'.$filename;
-						$urlUpload = '../assets/images/logos/'.basename($filename);
+						$base = 'assets/images/logosClientes/logo_'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+						$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+						$urlUpload = '../'.$base;
 						$tmp_name = $_FILES['logo']['tmp_name'];
-					}else{
-						$urlLogo = '';
-					}
 
-					if(!empty($_FILES['imgEncabezado']['type'])){
-						$filename2 = $_FILES['imgEncabezado']['name'];
-						$urlEncabezado = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/encabezados/'.$filename2;
-						// $urlEncabezado = $_SERVER['SERVER_NAME'].'/assets/images/firmas/'.$filename;
-						$urlUpload2 = '../assets/images/encabezados/'.basename($filename2);
-						$tmp_name2 = $_FILES['imgEncabezado']['tmp_name'];
-					}else{
-						$urlEncabezado = '';
-					}
+						if(move_uploaded_file($tmp_name, $urlUpload)) {
+							$sql=$con->prepare('UPDATE clientes SET nombre=:P2, nit=:P3, codigo=:P4, juridica=:P5, representante=:P6, direccion=:P7, telefono=:P8, celular=:P9, email=:P10, observacion=:P11, logo=:P12, encabezado=:P13 WHERE id=:P1');
+							$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombre'], 'P3'=>$_POST['nit'], 'P4'=>$_POST['codigo'], 'P5'=>$_POST['juridica'], 'P6'=>$_POST['representante'], 'P7'=>$_POST['direccion'], 'P8'=>$_POST['telefono'], 'P9'=>$_POST['celular'], 'P10'=>$_POST['email'], 'P11'=>$_POST['observacion'], 'P12'=>$urlBD, 'P13'=>$_POST['encabezado']));
+							$num=$sql->rowCount();
 
-					$sql=$con->prepare('UPDATE clientes SET nombre=:P2, nit=:P3, codigo=:P4, juridica=:P5, representante=:P6, direccion=:P7, telefono=:P8, celular=:P9, email=:P10, observacion=:P11, logo=:P12, encabezado=:P13, imgEncabezado=:P14 WHERE id=:P1');
-					$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombre'], 'P3'=>$_POST['nit'], 'P4'=>$_POST['codigo'], 'P5'=>$_POST['juridica'], 'P6'=>$_POST['representante'], 'P7'=>$_POST['direccion'], 'P8'=>$_POST['telefono'], 'P9'=>$_POST['celular'], 'P10'=>$_POST['email'], 'P11'=>$_POST['observacion'], 'P12'=>$urlLogo, 'P13'=>$_POST['encabezado'], 'P14'=>$urlEncabezado));
-					$num=$sql->rowCount();
-
-					if ($num>=1) {
-						if(move_uploaded_file($tmp_name, $urlLogo)) {
-							if(move_uploaded_file($tmp_name2, $urlEncabezado)) {
+							if ($num>=1) {
 								echo TRUE;
 							}else{
 								echo FALSE;
 							}
 						}else{
 							echo FALSE;
-						}
+						}	
 					}else{
-						echo FALSE;
+						$sql=$con->prepare('UPDATE clientes SET nombre=:P2, nit=:P3, codigo=:P4, juridica=:P5, representante=:P6, direccion=:P7, telefono=:P8, celular=:P9, email=:P10, observacion=:P11, encabezado=:P12 WHERE id=:P1');
+						$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombre'], 'P3'=>$_POST['nit'], 'P4'=>$_POST['codigo'], 'P5'=>$_POST['juridica'], 'P6'=>$_POST['representante'], 'P7'=>$_POST['direccion'], 'P8'=>$_POST['telefono'], 'P9'=>$_POST['celular'], 'P10'=>$_POST['email'], 'P11'=>$_POST['observacion'], 'P12'=>$_POST['encabezado']));
+						$num=$sql->rowCount();
+						
+						if ($num>=1) {
+							echo TRUE;
+						}else{
+							echo FALSE;
+						}
 					}
 					break;
 				case 'asignarServicio':
@@ -468,6 +479,36 @@
 						echo TRUE;
 					}else{
 						echo FALSE;
+					}
+					break;
+				case 'alterar-direccion':
+					$direccion=json_decode(str_replace("'", '"', $_POST['arreglo']), true);
+					unset($direccion[$_POST['posicion']]); // remove item at index 0
+					$direccion=array_values($direccion); // 'reindex' array
+
+					$cantidad=count($direccion);
+					$direccionYciudad = explode('@', $direccion[0]);
+
+					echo '
+					<input type="hidden" class="arreglo" value="'.str_replace('"', "'", json_encode($direccion)).'">
+					<div class="form-row">
+						<div class="form-group col-sm-6">
+							<label for="">Dirección</label>
+							<input type="text" class="form-control col-sm-12" id="direccion_1" value="'.$direccionYciudad[0].'">&nbsp;
+						</div>
+						<div class="form-group col-sm-5">
+							<label for="">Ciudad</label>
+							<input type="text" class="form-control col-sm-12" id="ciudad_1" value="'.$direccionYciudad[1].'">&nbsp;
+						</div>
+						<div class="form-group col-sm-1">
+							<button type="button" class="btn btn-primary nuevaDireccion" data-numero="'.$cantidad.'">+</button>
+						</div>
+					</div>';
+
+					for ($i=1; $i<$cantidad; $i++) {
+						$direccionYciudad2 = explode('@', $direccion[$i]);
+
+						echo '<div class="form-row"><div class="form-group col-sm-6"><label for="">&nbsp;</label><input type="text" class="form-control col-sm-12" id="direccion_'.($i+1).'" value="'.$direccionYciudad2[0].'"></div><div class="form-group col-sm-5"><label for="">&nbsp;</label><input type="text" class="form-control col-sm-12" id="ciudad_'.($i+1).'" value="'.$direccionYciudad2[1].'"></div><div class="form-group col-sm-1"><button type="button" class="btn btn-danger eliminarFila" id="'.$i.'">x</button></div></div>';
 					}
 					break;
 			}

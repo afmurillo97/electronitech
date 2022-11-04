@@ -14,7 +14,7 @@ $(document).on('ready', iniciar);
 function loadData() {
 	var nombre = $('#idEcri-selectized').val();
 
-	if (nombre.length>3) {	
+	if (nombre.length>3) {
 		var json = {
 			'accion' : 'searchTypes',
 			'nombre' : nombre
@@ -148,9 +148,14 @@ function formEditarTipoEquipo() {
 }
 
 function editarTipoEquipo() {
-	var id = $("#id").val();
-	var idEcri = $("#idEcri").val();
+	var id = $("#id").val();	
 	var riesgo = $("#riesgo").val();
+
+	if (typeof $("#idEcri").val() === 'number') {
+		var idEcri = $("#idEcri").val();
+	}else{
+		var idEcri = $("#idEcri").data("idecri");
+	}
 	var idDescripcionBiomedica = $("#idDescripcionBiomedica").val();
 	var idProtocolo = $("#idProtocolo").val();
 	var validacion = $("#validacion").val();

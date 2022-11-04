@@ -77,27 +77,36 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular clientes');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Nombre</th>
-													<th>Nit</th>
-													<th>Dirección</th>
-													<th>Telefono</th>
-													<th>E-mail</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Nombre</th>
+															<th>Nit</th>
+															<th>Dirección</th>
+															<th>Telefono</th>
+															<th>E-mail</th>
+															<th class="no-sort">Logo</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
-											foreach (getClientes($inicial, $cantPagina) as $fila) {												
+											foreach (getClientes($inicial, $cantPagina) as $fila) {
+												$logo = !empty($fila['logo']) ? '<a target="_blank" href="http://'.$fila['logo'].'"><span class="mdi mdi-file-pdf"></span></a>' : '';
+
+												$direccion=json_decode($fila['direccion'])[0];
+												$direccionYciudad = explode('@', $direccion);
+											
 												echo '
 													<tr>
 														<input type="hidden" class="idCliente" value="'.$fila['id'].'">
 														<td>'.$fila['nombre'].'</td>
 														<td>'.$fila['nit'].'</td>
-														<td>'.json_decode($fila['direccion'])[0].'</td>
+														<td>'.$direccionYciudad[0].', '.$direccionYciudad[1].'</td>
 														<td>'.$fila['telefono'].'</td>
 														<td>'.$fila['email'].'</td>
+														<td>'.$logo.'</td>
 														<td>
 															<div class="custom-control custom-switch" '.$anular.'>
 																<input type="checkbox" class="custom-control-input checkbox" id="customSwitch'.$fila['id'].'" checked>

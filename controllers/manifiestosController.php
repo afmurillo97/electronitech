@@ -44,18 +44,19 @@
 		if(isset($_POST['accion'])) {
 			switch ($_POST['accion']) {
 				case 'ingresar':
+					if(isset($_FILES['documento'])){
 					$filename = $_FILES['documento']['name'];
-					$urlDocumento = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/documentos/'.$filename;
-					// $urlFirma = $_SERVER['SERVER_NAME'].'/assets/images/documentos/'.$filename;
-					$urlUpload = '../assets/images/documentos/'.basename($filename);
+					$base = 'assets/images/manifiestos/manifiesto_'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+					$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+					$urlUpload = '../'.$base;
 					$tmp_name = $_FILES['documento']['tmp_name'];
 
-					$sql=$con->prepare('INSERT INTO manifiestos (nombre, documento, descripcion) VALUES (:P1,:P2,:P3)');
-					$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$urlDocumento, 'P3'=>$_POST['descripcion']));
-					$num=$sql->rowCount();
-
-					if ($num>=1) {
-						if(move_uploaded_file($tmp_name, $urlUpload)) {
+					if(move_uploaded_file($tmp_name, $urlUpload)){
+						$sql=$con->prepare('INSERT INTO manifiestos (nombre, documento, descripcion) VALUES (:P1,:P2,:P3)');
+						$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$urlBD, 'P3'=>$_POST['descripcion']));
+						$num=$sql->rowCount();
+						
+						if ($num>=1) {
 							echo TRUE;
 						}else{
 							echo FALSE;
@@ -63,7 +64,18 @@
 					}else{
 						echo FALSE;
 					}
-					break;
+				}else {
+					$sql=$con->prepare('INSERT INTO manifiestos (nombre, descripcion) VALUES (:P1,:P2)');
+					$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['descripcion']));
+					$num=$sql->rowCount();
+					
+					if ($num>=1) {
+						echo TRUE;
+					}else{
+						echo FALSE;
+					}
+				}
+				break;
 				case 'buscador':
 					$sql=$con->prepare('SELECT * FROM manifiestos WHERE nombre LIKE "%":P1"%"');
 					$resultado=$sql->execute(array('P1'=>$_POST['termino']));
@@ -177,23 +189,31 @@
 					break;
 				case 'editar':
 					$filename = $_FILES['documento']['name'];
-					$urlDocumento = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/documentos/'.$filename;
-					// $urlFirma = $_SERVER['SERVER_NAME'].'/assets/images/documentos/'.$filename;
-					$urlUpload = '../assets/images/documentos/'.basename($filename);
+					$base = 'assets/images/manifiestos/manifiesto_'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+					$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+					$urlUpload = '../'.$base;
 					$tmp_name = $_FILES['documento']['tmp_name'];
 
-					$sql=$con->prepare('UPDATE manifiestos SET nombre=:P2, documento=:P3, descripcion=:P4 WHERE id=:P1');
-					$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombre'], 'P3'=>$_POST['documento'], 'P4'=>$_POST['descripcion']));
-					$num=$sql->rowCount();
+					if (move_uploaded_file($tmp_name, $urlUpload)) {
+						$sql=$con->prepare('UPDATE manifiestos SET nombre=:P2, documento=:P3, descripcion=:P4 WHERE id=:P1');
+						$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombre'], 'P3'=>$urlBD, 'P4'=>$_POST['descripcion']));
+						$num=$sql->rowCount();	
 
-					if ($num>=1) {
-						if(move_uploaded_file($tmp_name, $urlUpload)) {
+						if ($num>=1) {
 							echo TRUE;
 						}else{
 							echo FALSE;
 						}
 					}else{
-						echo FALSE;
+						$sql=$con->prepare('UPDATE manifiestos SET nombre=:P2, descripcion=:P3 WHERE id=:P1');
+						$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombre'], 'P3'=>$_POST['descripcion']));
+						$num=$sql->rowCount();	
+
+						if ($num>=1) {
+							echo TRUE;
+						}else{
+							echo FALSE;
+						}
 					}
 					break;
 			}

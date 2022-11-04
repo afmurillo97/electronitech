@@ -22,6 +22,8 @@ function nuevoFabricante() {
 		'email' : email
 	};
 
+	console.log(json);
+
 	$.ajax({
 		url: '../../controllers/fabricantesController.php',
 		type: 'POST',

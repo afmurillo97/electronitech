@@ -6,7 +6,7 @@
 		function totalActivos() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT COUNT(*) FROM tipoEquipo WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT COUNT(*) FROM contactos WHERE fechaEliminacion IS NULL');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -21,10 +21,10 @@
 			$con=null;
 		}
 
-		function getTipoEquipo($inicio, $fin) {
+		function getContactos($inicio, $fin) {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT tipoEquipo.*, descripcionBiomedica.nombre AS descripcion, protocolos.nombre AS protocolo FROM tipoEquipo INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=tipoEquipo.idDescripcionBiomedica INNER JOIN protocolos ON protocolos.id=tipoEquipo.idProtocolo WHERE tipoEquipo.fechaEliminacion IS NULL LIMIT :P1,:P2');
+			$sql=$con->prepare('SELECT * FROM contactos WHERE fechaEliminacion IS NULL');
 			$sql->bindParam(':P1', $inicio, PDO::PARAM_INT);
 			$sql->bindParam(':P2', $fin, PDO::PARAM_INT);
 			$resultado=$sql->execute();
@@ -76,8 +76,8 @@
 		if(isset($_POST['accion'])) {
 			switch ($_POST['accion']) {
 				case 'ingresar':
-					$sql=$con->prepare('INSERT INTO tipoEquipo (nombre, riesgo, idDescripcionBiomedica, idProtocolo, validacion) VALUES (:P1,:P2,:P3,:P4,:P5)');
-					$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['riesgo'], 'P3'=>$_POST['idDescripcionBiomedica'], 'P4'=>$_POST['idProtocolo'], 'P5'=>$_POST['validacion']));
+					$sql=$con->prepare('INSERT INTO contactos (nombre, email, asunto, mensaje) VALUES (:P1,:P2,:P3,:P4)');
+					$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['email'], 'P3'=>$_POST['asunto'], 'P4'=>$_POST['mensaje']));
 					$num=$sql->rowCount();
 
 					if ($num>=1) {
@@ -87,23 +87,22 @@
 					}
 					break;
 				case 'buscador':
-					$sql=$con->prepare('SELECT tipoEquipo.*, descripcionBiomedica.nombre AS descripcion, protocolos.nombre AS protocolo FROM tipoEquipo INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=tipoEquipo.idDescripcionBiomedica INNER JOIN protocolos ON protocolos.id=tipoEquipo.idProtocolo WHERE tipoEquipo.nombre LIKE "%":P1"%"');
+					$sql=$con->prepare('SELECT * FROM contactos WHERE fechaEliminacion IS NULL LIMIT :P1,:P2');
 					$resultado=$sql->execute(array('P1'=>$_POST['termino']));
 					$resultado=$sql->fetchAll();
 					$num=$sql->rowCount();
 
 					if ($num>=1) {
-						$editar=permisosItem($_SESSION['idUsuario'], 'editar tipoEquipo');
-						$anular=permisosItem($_SESSION['idUsuario'], 'anular tipoEquipo');
+						$editar=permisosItem($_SESSION['idUsuario'], 'editar contactos');
+						$anular=permisosItem($_SESSION['idUsuario'], 'anular contactos');
 
 						echo '
 							<table class="table table-hover">
 								<tr>
-									<th>Tipo Equipo</th>
-									<th>Riesgo</th>
-									<th>Descripción Biomedica</th>
-									<th>Protocolo</th>
-									<th>Validación</th>
+									<th>Nombre</th>
+									<th>E-mail</th>
+									<th>Asunto Biomedica</th>
+									<th>Mensaje</th>
 									<th>Estado</th>
 									<th>Acción</th>
 								</tr>
@@ -114,10 +113,9 @@
 								<tr>
 									<input type="hidden" class="idTipoEquipo" value="'.$fila['id'].'">
 									<td>'.$fila['nombre'].'</td>
-									<td>'.$fila['riesgo'].'</td>
-									<td>'.$fila['descripcion'].'</td>
-									<td>'.$fila['protocolo'].'</td>
-									<td>'.$fila['validacion'].'</td>
+									<td>'.$fila['email'].'</td>
+									<td>'.$fila['asunto'].'</td>
+									<td>'.$fila['mensaje'].'</td>
 									<td>
 										<div class="custom-control custom-switch" '.$anular.'>
 											<input type="checkbox" class="custom-control-input checkbox" id="customSwitch'.$fila['id'].'" '.$checked.'>
@@ -125,7 +123,7 @@
 										</div>
 									</td>
 									<td>
-										<button type="button" class="btn btn-warning btn-sm formEditarTipoEquipo" data-toggle="modal" data-target="#exampleModal" title="Editar Tipo de Equipo" '.$editar.'>
+										<button type="button" class="btn btn-warning btn-sm formEditarContactos" data-toggle="modal" data-target="#exampleModal" title="Editar Contactos" '.$editar.'>
 											<span class="mdi mdi-pencil"></span>
 										</button>
 									</td>
@@ -140,9 +138,9 @@
 
 				case 'habilitar':
 					if ($_POST['habilitado']==0) {
-						$sql=$con->prepare('UPDATE tipoEquipo SET fechaEliminacion=NOW() WHERE id=:P1');
+						$sql=$con->prepare('UPDATE contactos SET fechaEliminacion=NOW() WHERE id=:P1');
 					}else{
-						$sql=$con->prepare('UPDATE tipoEquipo SET fechaEliminacion=NULL WHERE id=:P1');
+						$sql=$con->prepare('UPDATE contactos SET fechaEliminacion=NULL WHERE id=:P1');
 					}
 					$resultado=$sql->execute(array('P1'=>$_POST['id']));
 					$num=$sql->rowCount();
@@ -154,16 +152,13 @@
 					}
 					break;
 				case 'especifico':
-					$sql=$con->prepare('SELECT tipoEquipo.*, descripcionBiomedica.nombre AS descripcion, protocolos.nombre AS protocolo FROM tipoEquipo INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=tipoEquipo.idDescripcionBiomedica INNER JOIN protocolos ON protocolos.id=tipoEquipo.idProtocolo WHERE tipoEquipo.id=:P1');
+					$sql=$con->prepare('SELECT * FROM contactos WHERE id=:P1');
 					$resultado=$sql->execute(array('P1'=>$_POST['id']));
 					$resultado=$sql->fetchAll();
 					$num=$sql->rowCount();
 	
 					if ($num>=1) {
 						foreach ($resultado as $fila) {
-							$idProtocolo=$fila['idProtocolo'];
-							$protocolo=$fila['protocolo'];
-							$validacion=$fila['validacion'];
 							echo '
 								<div class="modal-header">
 									<h5 class="modal-title" id="exampleModalLabel">Editar Tipo de Equipo</h5>

@@ -14,9 +14,9 @@
 						<label class="col-sm-3 col-form-label">Tipo de Registro</label>
 						<div class="col-sm-9">
 							<select class="form-control" id="tipoRegistro">
-								<option value="-1">Seleccione</option>
-								<option value="sanitario">Registro Sanitario</option>
-								<option value="comercializacion">Permiso de Comercialización</option>
+								<option value="-1">SELECCIONE</option>
+								<option value="REGISTRO SANITARIO">REGISTRO SANITARIO</option>
+								<option value="PERMISO DE COMERCIALIZACION">PERMISO DE COMERCIALIZACION</option>
 							</select>
 						</div>
 					</div>

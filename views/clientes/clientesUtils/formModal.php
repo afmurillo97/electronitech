@@ -45,10 +45,10 @@
 								<label class="col-sm-6 col-form-label">Naturaleza Jurídica</label>
 								<div class="col-sm-9">
 									<select class="form-control" id="juridica">
-										<option value="-1">Seleccione</option>
-										<option value="publica">Publica</option>
-										<option value="mixta">Mixta</option>
-										<option value="privada">Privada</option>
+										<option value="-1">SELECCIONE</option>
+										<option value="PUBLICA">PUBLICA</option>
+										<option value="MIXTA">MIXTA</option>
+										<option value="PRIVADA">PRIVADA</option>
 									</select>
 								</div>
 							</div>
@@ -83,12 +83,23 @@
 							</div>
 						</div>
 
-						<div class="col direcciones">							
+						<div class="col direcciones">
 							<div class="form-group">
-								<label class="col-sm-3 col-form-label">Dirección/Ciudad</label>
-								<div class="col-sm-9 form-inline">
-									<input type="text" class="form-control" id="direccion_1" placeholder="Av Siempre Viva/Pereira">&nbsp;
-									<button type="button" class="btn btn-primary nuevaDireccion" data-numero="1">+</button>
+								<label class="col-sm-3 col-form-label"></label>
+								<div class="row col-sm-9 form-inline">
+									<div class="form-row">
+										<div class="form-group col-sm-6">
+											<label for="">Dirección</label>
+											<input type="text" class="form-control col-sm-12" id="direccion_1" placeholder="Dirección">
+										</div>
+										<div class="form-group col-sm-5">
+											<label for="">Ciudad</label>
+											<input type="text" class="form-control col-sm-12" id="ciudad_1" placeholder="Ciudad">
+										</div>
+										<div class="form-group col-sm-1">
+											<button type="button" class="btn btn-primary nuevaDireccion" data-numero="1">+</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -129,22 +140,13 @@
 								<label class="col-sm-3 col-form-label">Encabezado</label>
 								<div class="col-sm-9">
 									<select class="form-control" id="encabezado">
-										<option value="-1">Seleccione</option>
-										<option value="si">Si</option>
-										<option value="no">No</option>
+										<option value="NO">NO</option>
+										<option value="SI">SI</option>
 									</select>
 								</div>
 							</div>
 						</div>
-					
-						<div class="col">
-							<div class="form-group">
-								<label class="col-sm-6 col-form-label">Imagen Encabezado</label>
-								<div class="col-sm-9">
-									<input type="file" class="form-control" id="imgEncabezado">
-								</div>
-							</div>
-						</div>
+
 					</div>
 
 					<button type="button" class="btn btn-primary mr-2" id="nuevoCliente" data-dismiss="modal">Guardar</button>

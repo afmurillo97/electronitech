@@ -213,15 +213,33 @@
 		if(isset($_POST['accion'])) {
 			switch ($_POST['accion']) {
 				case 'ingresar':
-					$filename = $_FILES['foto']['name'];
-					$urlLogo = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/fotos/'.$filename;
-					// $urlLogo = $_SERVER['SERVER_NAME'].'/assets/images/fotos/'.$filename;
-					$urlUpload = '../assets/images/fotos/'.basename($filename);
-					$tmp_name = $_FILES['foto']['tmp_name'];
+					if(isset($_FILES['foto'])){
+						$filename = $_FILES['foto']['name'];
+						$base = 'assets/images/equipos/equipo'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+						$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+						$urlUpload = '../'.$base;
+						$tmp_name = $_FILES['foto']['tmp_name'];
 
-					// if(move_uploaded_file($tmp_name, $urlLogo)) {
-						$sql=$con->prepare('INSERT INTO equipos (idMarca, idModelo, registro, vidaUtil, documento) VALUES (:P1,:P2,:P3,:P4,:P5)');
-						$resultado=$sql->execute(array('P1'=>$_POST['idMarca'], 'P2'=>$_POST['idModelo'], 'P3'=>$_POST['idRegistro'], 'P4'=>$_POST['vidaUtil'], 'P5'=>$urlLogo));
+						if(move_uploaded_file($tmp_name, $urlUpload)) {
+							$sql=$con->prepare('INSERT INTO equipos (idMarca, idModelo, registro, vidaUtil, documento) VALUES (:P1,:P2,:P3,:P4,:P5)');
+							$resultado=$sql->execute(array('P1'=>$_POST['idMarca'], 'P2'=>$_POST['idModelo'], 'P3'=>$_POST['idRegistro'], 'P4'=>$_POST['vidaUtil'], 'P5'=>$urlBD));
+							$num=$sql->rowCount();
+							$id=$con->lastInsertId();
+
+							if ($num>=1) {						
+								foreach (json_decode($_POST['items']) as $item) {
+									$sql2=$con->prepare('INSERT INTO relaciones (modulo, pestana, nombre, valores, idPrincipal) VALUES (:P1,:P2,:P3,:P4,:P5)');
+									$resultado2=$sql2->execute(array('P1'=>'equipos', 'P2'=>$item->pestana, 'P3'=>$item->nombre, 'P4'=>json_encode($item->valores), 'P5'=>$id));
+								}
+							}else{
+								echo FALSE;
+							}
+						}else{
+							echo FALSE;
+						}
+					}else {
+						$sql=$con->prepare('INSERT INTO equipos (idMarca, idModelo, registro, vidaUtil) VALUES (:P1,:P2,:P3,:P4)');
+						$resultado=$sql->execute(array('P1'=>$_POST['idMarca'], 'P2'=>$_POST['idModelo'], 'P3'=>$_POST['idRegistro'], 'P4'=>$_POST['vidaUtil']));
 						$num=$sql->rowCount();
 						$id=$con->lastInsertId();
 
@@ -233,7 +251,7 @@
 						}else{
 							echo FALSE;
 						}
-					// }else{echo FALSE;}
+					}
 					break;
 				case 'buscador':
 					$sql=$con->prepare('SELECT marcas.nombre AS marca, modelos.nombre AS modelo, equipos.* FROM equipos INNER JOIN marcas ON marcas.id=equipos.idMarca INNER JOIN modelos ON modelos.id=equipos.idModelo WHERE marcas.nombre LIKE "%":P1"%"');
@@ -286,20 +304,38 @@
 					break;	
 				case 'editar':
 					$filename = $_FILES['foto']['name'];
-					$urlLogo = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/fotos/'.$filename;
-					// $urlLogo = $_SERVER['SERVER_NAME'].'/assets/images/fotos/'.$filename;
-					$urlUpload = '../assets/images/fotos/'.basename($filename);
+					$base = 'assets/images/equipos/equipo'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+					$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+					$urlUpload = '../'.$base;
 					$tmp_name = $_FILES['foto']['tmp_name'];
 
-					// if(move_uploaded_file($tmp_name, $urlLogo)) {
+					if(move_uploaded_file($tmp_name, $urlLogo)) {
 						$sql=$con->prepare('UPDATE equipos SET idMarca=:P2, idModelo=:P3, registro=:P4, vidaUtil=:P5, documento=:P6 WHERE id=:P1');
-						$resultado=$sql->execute(array('P1'=>$_POST['idEquipo'], 'P2'=>$_POST['idMarca'], 'P3'=>$_POST['idModelo'], 'P4'=>$_POST['idRegistro'], 'P5'=>$_POST['vidaUtil'], 'P6'=>$urlLogo));
+						$resultado=$sql->execute(array('P1'=>$_POST['idEquipo'], 'P2'=>$_POST['idMarca'], 'P3'=>$_POST['idModelo'], 'P4'=>$_POST['idRegistro'], 'P5'=>$_POST['vidaUtil'], 'P6'=>$urlBD));
 
 						foreach (json_decode($_POST['items']) as $item) {
-							$sql2=$con->prepare('UPDATE relaciones SET modulo=:P2, pestana=:P3, nombre=:P4, valores=:P5 WHERE id=:P1');
-							$resultado2=$sql2->execute(array('P1'=>$item->id, 'P2'=>'equipos', 'P3'=>$item->pestana, 'P4'=>$item->nombre, 'P5'=>json_encode($item->valores)));
+							if (isset($item->id)) {
+								$sql2=$con->prepare('UPDATE relaciones SET modulo=:P2, pestana=:P3, nombre=:P4, valores=:P5 WHERE id=:P1');
+								$resultado2=$sql2->execute(array('P1'=>$item->id, 'P2'=>'equipos', 'P3'=>$item->pestana, 'P4'=>$item->nombre, 'P5'=>json_encode($item->valores)));
+							}else{
+								$sql2=$con->prepare('INSERT INTO relaciones (modulo, pestana, nombre, valores, idPrincipal) VALUES (:P1,:P2,:P3,:P4,:P5)');
+								$resultado2=$sql2->execute(array('P1'=>'equipos', 'P2'=>$item->pestana, 'P3'=>$item->nombre, 'P4'=>json_encode($item->valores), 'P5'=>$_POST['idEquipo']));
+							}
 						}
-					// }
+					}else {
+						$sql=$con->prepare('UPDATE equipos SET idMarca=:P2, idModelo=:P3, registro=:P4, vidaUtil=:P5 WHERE id=:P1');
+						$resultado=$sql->execute(array('P1'=>$_POST['idEquipo'], 'P2'=>$_POST['idMarca'], 'P3'=>$_POST['idModelo'], 'P4'=>$_POST['idRegistro'], 'P5'=>$_POST['vidaUtil']));
+
+						foreach (json_decode($_POST['items']) as $item) {
+							if (isset($item->id)) {
+								$sql2=$con->prepare('UPDATE relaciones SET modulo=:P2, pestana=:P3, nombre=:P4, valores=:P5 WHERE id=:P1');
+								$resultado2=$sql2->execute(array('P1'=>$item->id, 'P2'=>'equipos', 'P3'=>$item->pestana, 'P4'=>$item->nombre, 'P5'=>json_encode($item->valores)));
+							}else{
+								$sql2=$con->prepare('INSERT INTO relaciones (modulo, pestana, nombre, valores, idPrincipal) VALUES (:P1,:P2,:P3,:P4,:P5)');
+								$resultado2=$sql2->execute(array('P1'=>'equipos', 'P2'=>$item->pestana, 'P3'=>$item->nombre, 'P4'=>json_encode($item->valores), 'P5'=>$_POST['idEquipo']));
+							}
+						}
+					}
 					break;
 
 				case 'habilitar':
@@ -392,7 +428,7 @@
 												</div>
 					
 												<div class="form-group row">
-													<label class="col-sm-3 col-form-label">Registro Invima</label>
+													<label class="col-sm-3 col-form-label">Tipo Registro Invima</label>
 													<div class="col-sm-9">
 														<select class="form-control form-control-sm" id="idRegistro">
 															<option value="'.$fila['registro'].'">'.$fila['registro'].'</option>
@@ -576,7 +612,7 @@
 													<td>
 														<select class="form-control form-control-sm unidad">
 															<option value="'.json_decode($fila['valores'])->unidad.'">'.json_decode($fila['valores'])->unidad.'</option>
-															<option value="G">G</option>
+															<option value="g">g</option>
 															<option value="Kg">Kg</option>
 														</select>
 													</td>
@@ -918,7 +954,10 @@
 								}
 							}
 							echo '
-									</table>
+									</table><br>
+									<div class="col text-center">
+										<button type="button" class="btn btn-outline-secondary btn-sm text-center nuevoInvima" data-invima="'.($c-1).'"><span class="mdi mdi-plus"></span> Agregar Item</button>
+									</div>
 								</div>
 								<!-- END INVIMA -->
 
@@ -948,7 +987,10 @@
 								}
 							}
 							echo '
-									</table>
+									</table><br>
+									<div class="col text-center">
+										<button type="button" class="btn btn-outline-secondary btn-sm text-center nuevoProveedor" data-prove="'.($d-1).'"><span class="mdi mdi-plus"></span> Agregar Item</button>
+									</div>
 								</div>
 								<!-- END PROVEEDORES -->
 
@@ -978,7 +1020,10 @@
 								}
 							}
 							echo '
-									</table>
+									</table><br>
+									<div class="col text-center">
+										<button type="button" class="btn btn-outline-secondary btn-sm text-center nuevoFabricante" data-fabricante="'.($e-1).'"><span class="mdi mdi-plus"></span> Agregar Item</button>
+									</div>
 								</div>
 								<!-- END FABRICANTES -->
 
@@ -1021,7 +1066,10 @@
 								}
 							}
 							echo '
-									</table>
+									</table><br>
+									<div class="col text-center">
+										<button type="button" class="btn btn-outline-secondary btn-sm text-center nuevaVariable" data-variable="'.($f-1).'"><span class="mdi mdi-plus"></span> Agregar Item</button>
+									</div>
 								</div>
 								<!-- END VARIABLES METROLOGICAS -->
 
@@ -1049,7 +1097,10 @@
 								}
 							}
 							echo '
-									</table>
+									</table><br>
+									<div class="col text-center">
+										<button type="button" class="btn btn-outline-secondary btn-sm text-center nuevoAccesorio" data-accesorio="'.($g-1).'"><span class="mdi mdi-plus"></span> Agregar Item</button>
+									</div>
 								</div>
 								<!-- END ACCESORIOS -->
 							</div><br>

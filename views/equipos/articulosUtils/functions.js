@@ -7,6 +7,7 @@ $(document).on('ready', iniciar);
 		$('#entrada').on('keyup', buscar);
 		$('.checkbox').click(habilitarArticulo);
 		$('.formEditarArticulo').click(formEditarArticulo);
+		$('.formEditarReporte').click(formEditarReporte);
 		$('#aplicar').click(aplicar);
 	}
 
@@ -106,6 +107,7 @@ function nuevoArticulo() {
 	form_data.append('idEquipo', $('#idEquipo').val());
 	form_data.append('idRegistro', $('#idRegistro').val());
 	form_data.append('ubicacion', $('#ubicacion').val());
+	form_data.append('codDoc', $('#codDoc').val());
 
 	var items = [];
 	// HISTORICO
@@ -249,6 +251,7 @@ function editarArticulo() {
 	form_data.append('idEquipo', $('#idEquipo').val());
 	form_data.append('idRegistro', $('#idRegistro').val());
 	form_data.append('ubicacion', $('#ubicacion').val());
+	form_data.append('codDoc', $('#codDoc').val());
 
 	var items = [];
 	// HISTORICO
@@ -321,6 +324,7 @@ function aplicar() {
 	form_data.append('idEquipo', $('#idEquipo').val());
 	form_data.append('idRegistro', $('#idRegistro').val());
 	form_data.append('ubicacion', $('#ubicacion').val());
+	form_data.append('codDoc', $('#codDoc').val());
 
 	var items = [];
 	// HISTORICO
@@ -365,5 +369,147 @@ function aplicar() {
 		contentType: false,
 		processData: false,
 		success: function(resultado) {}
+	});
+}
+
+function formEditarReporte() {
+	var fila = $(event.target);
+	var id = fila.parents('tr').find('.idArticulo').val();
+
+	var json = {
+		'accion' : 'form-reporte',
+		'id' : id
+	};
+
+	$.ajax({
+		url: '../../controllers/reportesController.php',
+		type: 'POST',
+		data: json,
+		success: function(resultado) {
+			$('.modal-reportes').html(resultado);
+			$('.servicioPor').on('change', servicioPor);
+			$('.tipoServicio').on('change', tipoServicio);
+			$('#guardarReporte').click(guardarReporte);
+			$('#editarReporte').click(editarReporte);			
+		}
+	});
+}
+
+function servicioPor() {
+	if ($('.servicioPor').val() == 'OTRO') {
+		$('.serviciPorTR').append('<td><input type="text" class="form-control form-control-sm descripcion" placeholder="Ejemplo: Otro"></td>');
+	}
+}
+	
+function tipoServicio() {
+	if ($('.tipoServicio').val() == 'OTRO') {
+		$('.tipoServicioTR').append('<td><input type="text" class="form-control form-control-sm descripcion" placeholder="Ejemplo: Otro"></td>');
+	}
+}
+
+function guardarReporte() {
+	var idArticulo = $(".idArticulo").val();
+	var contacto = $(".contacto").val();
+	var fechaServicio = $(".fechaServicio").val();
+	var servicioPor = ($('.servicioPor').val()=='OTRO') ? $('.serviciPorTR .descripcion').val() : $('.servicioPor').val();
+	var tipoServicio = ($('.tipoServicio').val()=='OTRO') ? $('.tipoServicioTR .descripcion').val() : $('.tipoServicio').val();
+	var observacionesGenerales = $(".observacionesGenerales").val();
+
+	var json = {
+		'accion' : 'nuevoReporte',
+		'idArticulo' : idArticulo,
+		'contacto' : contacto,
+		'fechaServicio' : fechaServicio,
+		'servicioPor' : servicioPor,
+		'tipoServicio' : tipoServicio,
+		'inspeccionInicial' : JSON.stringify(arregloReporte('inspeccionInicial', 4)),
+		'sistemaElectrico' : JSON.stringify(arregloReporte('sistemaElectrico', 3)),
+		'sistemaElectronico' : JSON.stringify(arregloReporte('sistemaElectronico', 5)),
+		'sistemaMecanico' : JSON.stringify(arregloReporte('sistemaMecanico', 3)),
+		'sistemaNeumatico' : JSON.stringify(arregloReporte('sistemaNeumatico', 4)),
+		'sistemaVentilacion' : JSON.stringify(arregloReporte('sistemaVentilacion', 3)),
+		'inspeccionFinal' : JSON.stringify(arregloReporte('inspeccionFinal', 3)),
+		'observaciones' :  observacionesGenerales
+	};
+
+	$.ajax({
+		url: '../../controllers/reportesController.php',
+		type: 'POST',
+		data: json,
+		success: function(resultado) {
+			jQuery.noConflict();
+
+			if (resultado==1) {
+				$('#modalCreateSuccess').modal('show');
+
+				setTimeout(() => {
+					location.reload();
+				}, 1050);
+			}else{
+				$('#modalDanger').modal('show');
+			}
+		}
+	});
+}
+
+function arregloReporte(clase, cantidad) {
+	var data = [];
+
+	for (let i = 1; i<=cantidad; i++) {		
+		var item = {
+			'item': i,
+			'valores': {
+				'estado': $('.'+clase+'-item_'+i+' .estado').val(),
+				'observacion': $('.'+clase+'-item_'+i+' .observacion').val(),
+			}
+		}
+		data.push(item);
+	}
+
+	return data;
+}
+
+function editarReporte() {
+	var idReporte = $(".idReporte").val();
+	var contacto = $(".contacto").val();
+	var fechaServicio = $(".fechaServicio").val();
+	var servicioPor = ($('.servicioPor').val()=='OTRO') ? $('.serviciPorTR .descripcion').val() : $('.servicioPor').val();
+	var tipoServicio = ($('.tipoServicio').val()=='OTRO') ? $('.tipoServicioTR .descripcion').val() : $('.tipoServicio').val();
+	var observacionesGenerales = $(".observacionesGenerales").val();
+
+	var json = {
+		'accion' : 'editarReporte',
+		'id' : idReporte,
+		'contacto' : contacto,
+		'fechaServicio' : fechaServicio,
+		'servicioPor' : servicioPor,
+		'tipoServicio' : tipoServicio,
+		'inspeccionInicial' : JSON.stringify(arregloReporte('inspeccionInicial', 4)),
+		'sistemaElectrico' : JSON.stringify(arregloReporte('sistemaElectrico', 3)),
+		'sistemaElectronico' : JSON.stringify(arregloReporte('sistemaElectronico', 5)),
+		'sistemaMecanico' : JSON.stringify(arregloReporte('sistemaMecanico', 3)),
+		'sistemaNeumatico' : JSON.stringify(arregloReporte('sistemaNeumatico', 4)),
+		'sistemaVentilacion' : JSON.stringify(arregloReporte('sistemaVentilacion', 3)),
+		'inspeccionFinal' : JSON.stringify(arregloReporte('inspeccionFinal', 3)),
+		'observaciones' :  observacionesGenerales
+	};
+
+	$.ajax({
+		url: '../../controllers/reportesController.php',
+		type: 'POST',
+		data: json,
+		success: function(resultado) {
+			jQuery.noConflict();
+
+			if (resultado==1) {
+				$('#modalEditSuccess').modal('show');
+
+				setTimeout(() => {
+					location.reload();
+				}, 1050);
+			}else{
+				$('#modalDanger').modal('show');
+			}
+		}
 	});
 }

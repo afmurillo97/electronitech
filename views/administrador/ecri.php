@@ -74,13 +74,15 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular ecri');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Código</th>
-													<th>Nombre</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Código</th>
+															<th>Nombre</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
 											foreach (getEcri($inicial, $cantPagina) as $fila) {

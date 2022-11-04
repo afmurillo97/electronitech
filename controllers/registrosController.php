@@ -44,24 +44,35 @@
 		if(isset($_POST['accion'])) {
 			switch ($_POST['accion']) {
 				case 'ingresar':
-					$filename = $_FILES['documento']['name'];
-					$urlDocumento = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/documentos/'.$filename;
-					// $urlFirma = $_SERVER['SERVER_NAME'].'/assets/images/documentos/'.$filename;
-					$urlUpload = '../assets/images/documentos/'.basename($filename);
-					$tmp_name = $_FILES['documento']['tmp_name'];
+					if(isset($_FILES['documento'])){
+						$filename = $_FILES['documento']['name'];
+						$base = 'assets/images/registrosInvima/registro_'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+						$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+						$urlUpload = '../'.$base;
+						$tmp_name = $_FILES['documento']['tmp_name'];
 
-					$sql=$con->prepare('INSERT INTO registros (nombre, tipoRegistro, documento, descripcion) VALUES (:P1,:P2,:P3,:P4)');
-					$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['tipoRegistro'], 'P3'=>$urlDocumento, 'P4'=>$_POST['descripcion']));
-					$num=$sql->rowCount();
-
-					if ($num>=1) {
 						if(move_uploaded_file($tmp_name, $urlUpload)) {
+							$sql=$con->prepare('INSERT INTO registros (nombre, tipoRegistro, documento, descripcion) VALUES (:P1,:P2,:P3,:P4)');
+							$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['tipoRegistro'], 'P3'=>$urlBD, 'P4'=>$_POST['descripcion']));
+							$num=$sql->rowCount();
+
+							if ($num>=1) {
+								echo TRUE;
+							}else{
+								echo FALSE;
+							}
+						}else{
+							echo FALSE;
+						}
+					}else {
+						$sql=$con->prepare('INSERT INTO registros (nombre, tipoRegistro, descripcion) VALUES (:P1,:P2,:P3)');
+						$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['tipoRegistro'], 'P3'=>$_POST['descripcion']));
+						$num=$sql->rowCount();
+						if ($num>=1) {
 							echo TRUE;
 						}else{
 							echo FALSE;
 						}
-					}else{
-						echo FALSE;
 					}
 					break;
 				case 'buscador':
@@ -153,8 +164,8 @@
 											<div class="col-sm-9">
 												<select class="form-control" id="tipoRegistro">
 													<option value="'.$fila['tipoRegistro'].'">'.$fila['tipoRegistro'].'</option>
-													<option value="sanitario">Registro Sanitario</option>
-													<option value="comercializacion">Permiso de Comercialización</option>
+													<option value="REGISTRO SANITARIO">REGISTRO SANITARIO</option>
+													<option value="PERMISO COMERCIALIZACION">PERMISO COMERCIALIZACION</option>
 												</select>
 											</div>
 										</div>
@@ -189,25 +200,34 @@
 					break;
 				case 'editar':
 					$filename = $_FILES['documento']['name'];
-					$urlDocumento = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/documentos/'.$filename;
-					// $urlFirma = $_SERVER['SERVER_NAME'].'/assets/images/documentos/'.$filename;
-					$urlUpload = '../assets/images/documentos/'.basename($filename);
+					$base = 'assets/images/registrosInvima/registro_'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+					$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+					$urlUpload = '../'.$base;
 					$tmp_name = $_FILES['documento']['tmp_name'];
 
-					$sql=$con->prepare('UPDATE registros SET nombre=:P2, tipoRegistro=:P3, documento=:P4, descripcion=:P5 WHERE id=:P1');
-					$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombre'], 'P3'=>$_POST['tipoRegistro'], 'P4'=>$urlDocumento, 'P5'=>$_POST['descripcion']));
-					$num=$sql->rowCount();
+					if(move_uploaded_file($tmp_name, $urlUpload)){
+						$sql=$con->prepare('UPDATE registros SET nombre=:P2, tipoRegistro=:P3, documento=:P4, descripcion=:P5 WHERE id=:P1');
+						$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombre'], 'P3'=>$_POST['tipoRegistro'], 'P4'=>$urlBD, 'P5'=>$_POST['descripcion']));
+						$num=$sql->rowCount();
 
-					if ($num>=1) {
-						if(move_uploaded_file($tmp_name, $urlUpload)) {
+						if ($num>=1) {
 							echo TRUE;
 						}else{
 							echo FALSE;
 						}
-					}else{
-						echo FALSE;
+					}else {
+						$sql=$con->prepare('UPDATE registros SET nombre=:P2, tipoRegistro=:P3, descripcion=:P4 WHERE id=:P1');
+						$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombre'], 'P3'=>$_POST['tipoRegistro'], 'P4'=>$_POST['descripcion']));
+						$num=$sql->rowCount();
+
+						if ($num>=1) {
+							echo TRUE;
+						}else{
+							echo FALSE;
+						}
 					}
 					break;
+
 			}
 		}
 		$con=null;	

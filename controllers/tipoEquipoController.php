@@ -154,7 +154,7 @@
 					}
 					break;
 				case 'especifico':
-					$sql=$con->prepare('SELECT tipoEquipo.*, descripcionBiomedica.nombre AS descripcion, protocolos.nombre AS protocolo, ecri.nombre AS ecri FROM tipoEquipo INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=tipoEquipo.idDescripcionBiomedica INNER JOIN protocolos ON protocolos.id=tipoEquipo.idProtocolo INNER JOIN ecri ON ecri.id=tipoEquipo.idEcri WHERE tipoEquipo.id=:P1');
+					$sql=$con->prepare('SELECT tipoEquipo.*, descripcionBiomedica.nombre AS descripcion, protocolos.nombre AS protocolo, ecri.nombre AS ecri, ecri.codigo AS codigoEcri FROM tipoEquipo INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=tipoEquipo.idDescripcionBiomedica INNER JOIN protocolos ON protocolos.id=tipoEquipo.idProtocolo INNER JOIN ecri ON ecri.id=tipoEquipo.idEcri WHERE tipoEquipo.id=:P1');
 					$resultado=$sql->execute(array('P1'=>$_POST['id']));
 					$resultado=$sql->fetchAll();
 					$num=$sql->rowCount();
@@ -183,7 +183,7 @@
 										<div class="form-group row">
 											<label class="col-sm-3 col-form-label">Tipo de Equipo</label>
 											<div class="col-sm-9">
-												<input type="text" class="form-control selectSearch" id="idEcri" value="'.$fila['ecri'].'">
+												<input type="text" class="form-control selectSearch" data-idEcri="'.$fila['idEcri'].'" id="idEcri" value="'.$fila['ecri'].' ('.$fila['codigoEcri'].')">
 											</div>
 										</div>
 										<div class="form-group row">
@@ -191,7 +191,7 @@
 											<div class="col-sm-9">
 												<select class="form-control" id="riesgo">
 													<option value="'.$fila['riesgo'].'">'.$fila['riesgo'].'</option>
-													<option value="noAplica">NO APLICA</option>
+													<option value="NO APLICA">NO APLICA</option>
 													<option value="I">I</option>
 													<option value="IIA">IIA</option>
 													<option value="IIB">IIB</option>

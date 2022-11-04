@@ -14,10 +14,10 @@
 						<label class="col-sm-3 col-form-label">Nivel</label>
 						<div class="col-sm-9">
 							<select class="form-control" id="nivel">
-								<option value="-1">Seleccione</option>
-								<option value="arriba">Arriba</option>
-								<option value="medio">Medio</option>
-								<option value="abajo">Abajo</option>
+								<option value="-1">SELECCIONE</option>
+								<option value="ARRIBA">ARRIBA</option>
+								<option value="MEDIO">MEDIO</option>
+								<option value="ABAJO">ABAJO</option>
 							</select>
 						</div>
 					</div>

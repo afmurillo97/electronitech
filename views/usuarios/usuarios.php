@@ -17,7 +17,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Corona · Usuarios</title>
+	<title>Usuarios</title>
 	<!-- HEAD -->
 	<?php include_once '../layouts/head.php'; ?>
 	<!-- END HEAD -->
@@ -74,19 +74,24 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular usuarios');
 
 											echo '
-												<table class="table table-hover table-responsive">
-													<tr>
-														<th>Nombres</th>
-														<th>Identificación</th>
-														<th>Celular</th>
-														<th>Username</th>
-														<th>E-mail</th>
-														<th>Cargo</th>
-														<th>Firma</th>
-														<th>Acción</th>
-													</tr>
+												<table class="table table-hover table-responsive sort">
+													<thead>
+														<tr>
+															<th>Nombres</th>
+															<th>Identificación</th>
+															<th>Celular</th>
+															<th>Username</th>
+															<th>E-mail</th>
+															<th>Cargo</th>
+															<th class="no-sort">Firma</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
+													
 											';
 											foreach (getUsuarios($inicial, $cantPagina) as $fila) {
+												$firma = !empty($fila['firmaDigital']) ? '<a target="_blank" href="http://'.$fila['firmaDigital'].'"><span class="mdi mdi-file-pdf"></span></a>' : '';
+
 												echo '
 													<tr>
 														<input type="hidden" class="idUsuario" value="'.$fila['id'].'">
@@ -96,7 +101,7 @@
 														<td>'.$fila['username'].'</td>
 														<td>'.$fila['email'].'</td>
 														<td>'.$fila['cargo'].'</td>
-														<td><a href="'.$fila['firmaDigital'].'"><span class="mdi mdi-file-pdf"></span></a></td>
+														<td>'.$firma.'</td>
 														<td>
 															<button type="button" class="btn btn-warning btn-sm formEditarUsuario" data-toggle="modal" data-target="#exampleModal" title="Editar Usuario" '.$editar.'>
 																<span class="mdi mdi-pencil"></span>

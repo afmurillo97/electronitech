@@ -74,18 +74,21 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular articulos');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Tipo Equipo</th>
-													<th>Marca</th>
-													<th>Modelo</th>
-													<th>Ubicacion</th>
-													<th>Guia</th>
-													<th>Reporte</th>
-													<th>Cliente</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Tipo Equipo</th>
+															<th>Marca</th>
+															<th>Modelo</th>
+															<th>Ubicacion</th>
+															<th class="no-sort">Guia</th>
+															<th class="no-sort">Reporte</th>
+															<th class="no-sort">PDF Reporte</th>
+															<th>Cliente</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
 											foreach (getArticulos($inicial, $cantPagina) as $fila) {												
@@ -101,10 +104,15 @@
 																<span class="mdi mdi-file-pdf"></span>
 															</a>
 														</td>
-														<td title="Generar Reporte">
-															<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target=".bd-example-modal-lg2" title="Generar Reporte" '.$editar.'>
+														<td title="Crear Reporte">
+															<button type="button" class="btn btn-success btn-sm formEditarReporte" data-toggle="modal" data-target=".bd-example-modal-lg2" title="Generar Reporte" '.$editar.'>
 																<span class="mdi mdi-book-open-page-variant"></span>
 															</button>
+														</td>
+														<td title="Descargar Reporte">
+															<a href="../../views/equipos/articulosUtils/exportarReporte.php?id='.$fila['id'].'" class="btn btn-dark btn-sm " target="_blank">
+																<span class="mdi mdi-file-pdf outline"></span>
+															</a>
 														</td>
 														<td>'.$fila['cliente'].'</td>
 														<td>

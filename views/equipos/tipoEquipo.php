@@ -82,16 +82,18 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular tipoEquipo');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Tipo Equipo</th>
-													<th>Riesgo</th>
-													<th>Descripción Biomedica</th>
-													<th>Protocolo</th>
-													<th>Validación</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Tipo Equipo</th>
+															<th>Riesgo</th>
+															<th>Descripción Biomedica</th>
+															<th>Protocolo</th>
+															<th class="no-sort">Validación</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
 											foreach (getTipoEquipo($inicial, $cantPagina) as $fila) {

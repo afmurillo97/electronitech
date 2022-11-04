@@ -149,7 +149,7 @@
 										<div class="form-group row">
 											<label class="col-sm-3 col-form-label">Celular</label>
 											<div class="col-sm-9">
-												<input type="number" class="form-control" id="Celular" value="'.$fila['celular'].'">
+												<input type="number" class="form-control" id="celular" value="'.$fila['celular'].'">
 											</div>
 										</div>
 										<div class="form-group row">

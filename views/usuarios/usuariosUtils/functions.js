@@ -9,6 +9,7 @@ $(document).on('ready', iniciar);
 
 	function nuevoUsuario() {
 		var form_data = new FormData();
+
 		form_data.append('accion', 'ingresar');
 		form_data.append('nombres', $("#nombres").val());
 		form_data.append('apellidos', $("#apellidos").val());
@@ -27,14 +28,13 @@ $(document).on('ready', iniciar);
 			contentType: false,
             processData: false,
 			success: function(resultado) {
-				if (resultado) {
-					console.log(resultado)
-				
-					jQuery.noConflict();
+				jQuery.noConflict();
+
+				if (resultado==1) {
 					$('#modalCreateSuccess').modal('show');
 	
 					setTimeout(() => {
-						// location.reload();					
+						location.reload();
 					}, 1050);
 				}else{
 					$('#modalDanger').modal('show');
@@ -84,8 +84,8 @@ function formEditarUsuario() {
 }
 
 function editarUsuario() {
-
 	var form_data = new FormData();
+
 	form_data.append('accion', 'editar');
 	form_data.append('id', $("#id").val());
 	form_data.append('nombres', $("#nombres").val());
@@ -105,8 +105,9 @@ function editarUsuario() {
 		contentType: false,
 		processData: false,
 		success: function(resultado) {
-			if (resultado) {
-				jQuery.noConflict();
+			jQuery.noConflict();
+
+			if (resultado==1) {
 				$('#modalEditSuccess').modal('show');
 
 				setTimeout(() => {

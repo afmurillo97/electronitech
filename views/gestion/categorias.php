@@ -74,13 +74,15 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular categorias');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Nivel</th>
-													<th>Descripcion</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Nivel</th>
+															<th>Descripcion</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
 											foreach (getCategorias($inicial, $cantPagina) as $fila) {

@@ -56,10 +56,10 @@
 						<label class="col-sm-3 col-form-label">Tipo de Régimen</label>
 						<div class="col-sm-9">
 							<select class="form-control" id="regimen">
-								<option value="-1">Seleccione</option>
-								<option value="comun">Régimen Común</option>
-								<option value="simplificado">Régimen Simplificado</option>
-								<option value="gran">Gran Contribuyente</option>
+								<option value="-1">SELECCIONE</option>
+								<option value="REGIMEN COMUN">REGIMEN COMUN</option>
+								<option value="REGIMEN SIMPLIFICADO">REGIMEN SIMPLIFICADO</option>
+								<option value="GRAN CONTRIBUYENTE">GRAN CONTRIBUYENTE</option>
 							</select>
 						</div>
 					</div>

@@ -193,9 +193,9 @@
 											<div class="col-sm-9">
 												<select class="form-control" id="regimen">
 													<option value="'.$fila['regimen'].'">'.$fila['regimen'].'</option>
-													<option value="comun">Régimen Común</option>
-													<option value="simplificado">Régimen Simplificado</option>
-													<option value="gran">Gran Contribuyente</option>
+													<option value="REGIMEN COMUN">REGIMEN COMUN</option>
+													<option value="REGIMEN SIMPLIFICADO">REGIMEN SIMPLIFICADO</option>
+													<option value="GRAN CONTRIBUYENTE">GRAN CONTRIBUYENTE</option>
 												</select>
 											</div>
 										</div>

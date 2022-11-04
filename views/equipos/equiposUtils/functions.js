@@ -306,12 +306,13 @@ function nuevoEquipo() {
 		contentType: false,
 		processData: false,
 		success: function(resultado) {
-			if (resultado) {
-				jQuery.noConflict();
+			jQuery.noConflict();
+
+			if (resultado==1) {
 				$('#modalCreateSuccess').modal('show');
 
 				setTimeout(() => {
-					location.reload();					
+					location.reload();
 				}, 1050);
 			}else{
 				$('#modalDanger').modal('show');
@@ -387,6 +388,12 @@ function formEditarEquipo() {
 			$('.modal-equipos').html('');
 			$('.modal-equipos').html(resultado);
 			$('#editarEquipo').click(editarEquipo);
+			$('.nuevoInvima').click(nuevoInvima);
+			$('.nuevoProveedor').click(nuevoProveedor);
+			$('.nuevoFabricante').click(nuevoFabricante);
+			$('.nuevaVariable').click(nuevaVariable);		
+			$('.nuevoAccesorio').click(nuevoAccesorio);
+
 		}
 	});
 }
@@ -469,9 +476,10 @@ function editarEquipo() {
 		contentType: false,
 		processData: false,
 		success: function(resultado) {
-			if (resultado) {
-				jQuery.noConflict();
-				$('#modalEditSuccess').modal('show');
+			jQuery.noConflict();
+
+			if (resultado==1) {
+				$('#modalCreateSuccess').modal('show');
 
 				setTimeout(() => {
 					location.reload();
@@ -479,7 +487,6 @@ function editarEquipo() {
 			}else{
 				$('#modalDanger').modal('show');
 			}
-			console.log(resultado);
 		}
 	});
 }

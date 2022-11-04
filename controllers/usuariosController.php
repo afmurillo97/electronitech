@@ -80,24 +80,36 @@
 		if(isset($_POST['accion'])) {
 			switch ($_POST['accion']) {
 				case 'ingresar':
-					$filename = $_FILES['firma']['name'];
-					$urlFirma = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/firmas/'.$filename;
-					// $urlFirma = $_SERVER['SERVER_NAME'].'/assets/images/firmas/'.$filename;
-					$urlUpload = '../assets/images/firmas/'.basename($filename);
-					$tmp_name = $_FILES['firma']['tmp_name'];
+					if(isset($_FILES['firma'])){
+						$filename = $_FILES['firma']['name'];
+						$base = 'assets/images/firmasUsuarios/firma_'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+						$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+						$urlUpload = '../'.$base;
+						$tmp_name = $_FILES['firma']['tmp_name'];
 
-					$sql=$con->prepare('INSERT INTO usuarios (nombres, apellidos, identificacion, username, password, email, cargo, celular, firmaDigital) VALUES (:P1,:P2,:P3,:P4,:P5,:P6,:P7,:P8,:P9)');
-					$resultado=$sql->execute(array('P1'=>$_POST['nombres'], 'P2'=>$_POST['apellidos'], 'P3'=>$_POST['identificacion'], 'P4'=>$_POST['username'], 'P5'=>base64_encode($_POST['password']), 'P6'=>$_POST['email'], 'P7'=>$_POST['cargo'], 'P8'=>$_POST['celular'], 'P9'=>$urlFirma));
-					$num=$sql->rowCount();
-
-					if ($num>=1) {
 						if(move_uploaded_file($tmp_name, $urlUpload)) {
-							echo TRUE;
+							$sql=$con->prepare('INSERT INTO usuarios (nombres, apellidos, identificacion, username, password, email, cargo, celular, firmaDigital) VALUES (:P1,:P2,:P3,:P4,:P5,:P6,:P7,:P8,:P9)');
+							$resultado=$sql->execute(array('P1'=>$_POST['nombres'], 'P2'=>$_POST['apellidos'], 'P3'=>$_POST['identificacion'], 'P4'=>$_POST['username'], 'P5'=>base64_encode($_POST['password']), 'P6'=>$_POST['email'], 'P7'=>$_POST['cargo'], 'P8'=>$_POST['celular'], 'P9'=>$urlBD));
+							$num=$sql->rowCount();
+
+							if ($num>=1) {
+								echo TRUE;
+							}else{
+								echo FALSE;
+							}
 						}else{
 							echo FALSE;
 						}
 					}else{
-						echo FALSE;
+						$sql=$con->prepare('INSERT INTO usuarios (nombres, apellidos, identificacion, username, password, email, cargo, celular) VALUES (:P1,:P2,:P3,:P4,:P5,:P6,:P7,:P8)');
+						$resultado=$sql->execute(array('P1'=>$_POST['nombres'], 'P2'=>$_POST['apellidos'], 'P3'=>$_POST['identificacion'], 'P4'=>$_POST['username'], 'P5'=>base64_encode($_POST['password']), 'P6'=>$_POST['email'], 'P7'=>$_POST['cargo'], 'P8'=>$_POST['celular']));
+						$num=$sql->rowCount();
+
+						if ($num>=1) {
+							echo TRUE;
+						}else{
+							echo FALSE;
+						}
 					}
 					break;
 				case 'buscador':
@@ -124,6 +136,8 @@
 								</tr>
 						';
 						foreach ($resultado as $fila) {
+							$firma = !empty($fila['firmaDigital']) ? '<a target="_blank" href="http://'.$fila['firmaDigital'].'"><span class="mdi mdi-file-pdf"></span></a>' : '';
+
 							echo '
 								<tr>
 									<input type="hidden" class="idUsuario" value="'.$fila['id'].'">
@@ -133,7 +147,7 @@
 									<td>'.$fila['username'].'</td>
 									<td>'.$fila['email'].'</td>
 									<td>'.$fila['cargo'].'</td>
-									<td><a href="'.$fila['firmaDigital'].'"><span class="mdi mdi-file-pdf"></span></a></td>
+									<td>'.$firma.'</td>
 									<td>
 										<button type="button" class="btn btn-warning btn-sm formEditarUsuario" data-toggle="modal" data-target="#exampleModal" title="Editar Usuario" '.$editar.'>
 											<span class="mdi mdi-pencil"></span>
@@ -157,23 +171,31 @@
 					break;	
 				case 'editar':
 					$filename = $_FILES['firma']['name'];
-					$urlFirma = $_SERVER['SERVER_NAME'].'/electronitech/assets/images/firmas/'.$filename;
-					// $urlFirma = $_SERVER['SERVER_NAME'].'/assets/images/firmas/'.$filename;
-					$urlUpload = '../assets/images/firmas/'.basename($filename);
+					$base = 'assets/images/firmasUsuarios/firma_'.uniqid().'.'.pathinfo($filename, PATHINFO_EXTENSION);
+					$urlBD = ($_SERVER['SERVER_NAME'] == '127.0.0.1') ? '127.0.0.1/electronitech/'.$base : $_SERVER['SERVER_NAME'].'/'.$base;
+					$urlUpload = '../'.$base;
 					$tmp_name = $_FILES['firma']['tmp_name'];
 
-					$sql=$con->prepare('UPDATE usuarios SET nombres=:P2, apellidos=:P3, identificacion=:P4, username=:P5, password=:P6, email=:P7, cargo=:P8, celular=:P9, firmaDigital=:P10 WHERE id=:P1');
-					$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombres'], 'P3'=>$_POST['apellidos'], 'P4'=>$_POST['identificacion'], 'P5'=>$_POST['username'], 'P6'=>base64_encode($_POST['password']), 'P7'=>$_POST['email'], 'P8'=>$_POST['cargo'], 'P9'=>$_POST['celular'], 'P10'=>$urlFirma));
-					$num=$sql->rowCount();
+					if(move_uploaded_file($tmp_name, $urlUpload)) {
+						$sql=$con->prepare('UPDATE usuarios SET nombres=:P2, apellidos=:P3, identificacion=:P4, username=:P5, password=:P6, email=:P7, cargo=:P8, celular=:P9, firmaDigital=:P10 WHERE id=:P1');
+						$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombres'], 'P3'=>$_POST['apellidos'], 'P4'=>$_POST['identificacion'], 'P5'=>$_POST['username'], 'P6'=>base64_encode($_POST['password']), 'P7'=>$_POST['email'], 'P8'=>$_POST['cargo'], 'P9'=>$_POST['celular'], 'P10'=>$urlBD));
+						$num=$sql->rowCount();
 
-					if ($num>=1) {
-						if(move_uploaded_file($tmp_name, $urlUpload)) {
+						if ($num>=1) {
 							echo TRUE;
 						}else{
 							echo FALSE;
 						}
 					}else{
-						echo FALSE;
+						$sql=$con->prepare('UPDATE usuarios SET nombres=:P2, apellidos=:P3, identificacion=:P4, username=:P5, password=:P6, email=:P7, cargo=:P8, celular=:P9 WHERE id=:P1');
+						$resultado=$sql->execute(array('P1'=>$_POST['id'], 'P2'=>$_POST['nombres'], 'P3'=>$_POST['apellidos'], 'P4'=>$_POST['identificacion'], 'P5'=>$_POST['username'], 'P6'=>base64_encode($_POST['password']), 'P7'=>$_POST['email'], 'P8'=>$_POST['cargo'], 'P9'=>$_POST['celular']));
+						$num=$sql->rowCount();
+
+						if ($num>=1) {
+							echo TRUE;
+						}else{
+							echo FALSE;
+						}
 					}
 					break;
 

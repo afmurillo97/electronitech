@@ -74,24 +74,27 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular registros');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Nombre</th>
-													<th>Tipo Registro</th>
-													<th>Documento</th>
-													<th>Descripción</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Nombre</th>
+															<th>Tipo Registro</th>
+															<th class="no-sort">Documento</th>
+															<th>Descripción</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
 											foreach (getRegistros($inicial, $cantPagina) as $fila) {
+												$registroIvima = !empty($fila['documento']) ? '<a target="_blank" href="http://'.$fila['documento'].'"><span class="mdi mdi-file-pdf"></span></a>' : '';
 												echo '
 													<tr>
 														<input type="hidden" class="idRegistro" value="'.$fila['id'].'">
 														<td>'.$fila['nombre'].'</td>
 														<td>'.$fila['tipoRegistro'].'</td>
-														<td><a href="'.$fila['documento'].'"><span class="mdi mdi-file-pdf"></span></a></td>
+														<td>'.$registroIvima.'</td>
 														<td>'.$fila['descripcion'].'</td>
 														<td>
 															<div class="custom-control custom-switch" '.$anular.'>

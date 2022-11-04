@@ -300,8 +300,8 @@
 		if(isset($_POST['accion'])) {
 			switch ($_POST['accion']) {
 				case 'ingresar':
-					$sql=$con->prepare('INSERT INTO articulos (idCliente, direccion, idServicio, serie, tipo, inventario, idTipoEquipo, idEquipo, idRegistro, ubicacion) VALUES (:P1,:P2,:P3,:P4,:P5,:P6,:P7,:P8,:P9,:P10)');
-					$resultado=$sql->execute(array('P1'=>$_POST['idCliente'], 'P2'=>$_POST['direccion'], 'P3'=>$_POST['idServicio'], 'P4'=>$_POST['serie'], 'P5'=>$_POST['tipo'], 'P6'=>$_POST['inventario'], 'P7'=>$_POST['idTipoEquipo'], 'P8'=>$_POST['idEquipo'], 'P9'=>$_POST['idRegistro'], 'P10'=>$_POST['ubicacion']));
+					$sql=$con->prepare('INSERT INTO articulos (idCliente, direccion, idServicio, serie, tipo, inventario, idTipoEquipo, idEquipo, idRegistro, ubicacion, codDoc) VALUES (:P1,:P2,:P3,:P4,:P5,:P6,:P7,:P8,:P9,:P10,:P11)');
+					$resultado=$sql->execute(array('P1'=>$_POST['idCliente'], 'P2'=>$_POST['direccion'], 'P3'=>$_POST['idServicio'], 'P4'=>$_POST['serie'], 'P5'=>$_POST['tipo'], 'P6'=>$_POST['inventario'], 'P7'=>$_POST['idTipoEquipo'], 'P8'=>$_POST['idEquipo'], 'P9'=>$_POST['idRegistro'], 'P10'=>$_POST['ubicacion'], 'P11'=>$_POST['codDoc']));
 					$num=$sql->rowCount();
 					$id=$con->lastInsertId();
 
@@ -367,8 +367,8 @@
 					}
 					break;	
 				case 'editar':
-					$sql=$con->prepare('UPDATE articulos SET idCliente=:P2, direccion=:P3, idServicio=:P4, serie=:P5, tipo=:P6, inventario=:P7, idTipoEquipo=:P8, idEquipo=:P9, idRegistro=:P10, ubicacion=:P11 WHERE id=:P1');
-					$resultado=$sql->execute(array('P1'=>$_POST['idArticulo'], 'P2'=>$_POST['idCliente'], 'P3'=>$_POST['direccion'], 'P4'=>$_POST['idServicio'], 'P5'=>$_POST['serie'], 'P6'=>$_POST['tipo'], 'P7'=>$_POST['inventario'], 'P8'=>$_POST['idTipoEquipo'], 'P9'=>$_POST['idEquipo'], 'P10'=>$_POST['idRegistro'], 'P11'=>$_POST['ubicacion']));
+					$sql=$con->prepare('UPDATE articulos SET idCliente=:P2, direccion=:P3, idServicio=:P4, serie=:P5, tipo=:P6, inventario=:P7, idTipoEquipo=:P8, idEquipo=:P9, idRegistro=:P10, ubicacion=:P11, codDoc=:P12 WHERE id=:P1');
+					$resultado=$sql->execute(array('P1'=>$_POST['idArticulo'], 'P2'=>$_POST['idCliente'], 'P3'=>$_POST['direccion'], 'P4'=>$_POST['idServicio'], 'P5'=>$_POST['serie'], 'P6'=>$_POST['tipo'], 'P7'=>$_POST['inventario'], 'P8'=>$_POST['idTipoEquipo'], 'P9'=>$_POST['idEquipo'], 'P10'=>$_POST['idRegistro'], 'P11'=>$_POST['ubicacion'], 'P12'=>$_POST['codDoc']));
 
 					foreach (json_decode($_POST['items']) as $item) {
 						$sql2=$con->prepare('UPDATE relaciones SET modulo=:P2, pestana=:P3, nombre=:P4, valores=:P5 WHERE id=:P1');
@@ -398,9 +398,10 @@
 	
 					if ($num>=1) {
 						foreach ($resultado as $fila) {
-							echo '
+							
+						echo '
 						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Crear Articulo</h5>
+							<h5 class="modal-title" id="exampleModalLabel">Editar Articulo</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
 								<span aria-hidden="true">&times;</span>
 							</button>
@@ -528,6 +529,13 @@
 											<label class="col-sm-3 col-form-label">Ubicación</label>
 											<div class="col-sm-9">
 												<input type="text" class="form-control form-control-sm" id="ubicacion" value="'.$fila['ubicacion'].'">
+											</div>
+										</div>
+
+										<div class="form-group row">
+											<label class="col-sm-3 col-form-label">Código Documento</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control form-control-sm" id="codDoc" value="'.$fila['codDoc'].'">
 											</div>
 										</div>
 									</div>
@@ -934,7 +942,442 @@
 						}
 					}
 					break;
-
+				
+					$sql=$con->prepare('SELECT * FROM reportes WHERE id=:P1');
+					$resultado=$sql->execute(array('P1'=>$_POST['id']));
+					$resultado=$sql->fetchAll();
+					$num=$sql->rowCount();
+	
+					if ($num>=1) {
+						foreach ($resultado as $fila) {
+						echo '
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Editar Reporte de Mantenimiento</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<input type="hidden" id="idArticulo" value="'.$fila['id'].'">				
+							<form>
+								<div class="header">
+									<table class="table table-sm">
+										<tr>
+											<th>CLIENTEEEEEEEEEEE:</th>
+											<td>'.$fila['cliente'].'</td>
+											<th>CONTACTO:</th>
+											<td><input type="text" class="form-control form-control-sm" placeholder="Contacto"></td>
+										</tr>
+										<tr>
+											<th>DIRECCION:</th>
+											<td>CR 28 # 81-76 LAS AMERICAS </td>
+											<th>CIUDAD:</th>
+											<td>MANZANA 36 LOTE 38</td>
+										</tr>
+										<tr>
+											<th colspan="2">FECHA DEL SERVICIO:</th>
+											<td colspan="2"><input type="date" class="form-control form-control-sm"></td>
+										</tr>
+									</table>
+								</div>
+								<br>
+								<!-- SERVICIO POR // TIPO DE SERVICIO -->
+								<table class="table table-sm">
+									<tr class="serviciPorTR">
+										<th>SERVICIO POR:</th>
+										<td>
+											<select class="form-control form-control-sm servicioPor">
+												<option value="GARANTIA">GARANTIA</option>
+												<option value="CONTRATO">CONTRATO</option>
+												<option value="FACTURA">FACTURA</option>
+												<option value="OTRO">OTRO</option>
+											</select>
+										</td>
+									</tr>
+									<tr class="tipoServicioTR">
+										<th>TIPO DE SERVICIO:</th>
+										<td>
+											<select class="form-control form-control-sm tipoServicio">
+												<option value="INSTALACIÓN">INSTALACIÓN</option>
+												<option value="PREVENTIVO">PREVENTIVO</option>
+												<option value="CORRECTIVO">CORRECTIVO</option>
+												<option value="OTRO">OTRO</option>
+											</select>
+										</td>
+									</tr>
+								</table><br>
+								<!-- MANTENIMIENTO DE EQUIPO  -->
+								<h5 class="text-center">MANTENIMIENTO DE EQUIPO Y/O DISPOSITIVO BIOMEDICO</h5>
+								<h5 class="text-center">PROTOCOLO: GENERAL</h5>
+								<h6 class="text-center">INSPECCION INICIAL</h6>
+								<table class="table table-sm">
+									<tr>
+										<th>DESCRIPCIÓN</th>
+										<th>ESTADO</th>
+										<th>OBSERVACIONES</th>
+									</tr>
+									<tr class="inspeccionInicial-item_1">
+										<td>VERIFICACION DE ESTADO FISICO GENERAL</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="inspeccionInicial-item_2">
+										<td>VERIFICACION DE FUNCIONAMIENTO</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="inspeccionInicial-item_3">
+										<td>VERIFICACION DE ACCESORIOS</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="inspeccionInicial-item_4">
+										<td>VERIFICACION DE INDICADORES VISUALES/AUDITIVOS</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5"><h6 class="text-center">SISTEMA ELECTRICO</h6></td>
+									</tr>
+									<tr class="sistemaElectrico-item_1">
+										<td>ALIMENTACION RED ELECTRICA Y/O REGULACION</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaElectrico-item_2">
+										<td>ALIMENTACION SUPLEMENTARIA Y/O BATERIAS</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaElectrico-item_3">
+										<td>PROTECCIONES (FUSIBLES, TERMICOS, ETC)</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5"><h6 class="text-center">SISTEMA ELECTRONICO</h6></td>
+									</tr>
+									<tr class="sistemaElectronico-item_1">
+										<td>TARJETA PRINCIPAL DE CONTROL Y/O POTENCIA</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaElectronico-item_2">
+										<td>CONECTORES Y PUERTOS DE COMUNICACION</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaElectronico-item_3">
+										<td>MANDOS DE CONTROL, TECLADOS</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaElectronico-item_4">
+										<td>MODULOS DE MONITOREO (EKG,SPO2,NIBP,TEMP, ETC)</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaElectronico-item_5">
+										<td>PANTALLAS E INDICADORES VISUALES/AUDITIVOS</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5"><h6 class="text-center">SISTEMA MECANICO</h6></td>
+									</tr>
+									<tr class="sistemaMecanico-item_1">
+										<td>AJUSTE DE PIEZAS MOVILES</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaMecanico-item_2">
+										<td>LUBRICACION Y AJUSTE DE PIEZAS</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaMecanico-item_3">
+										<td>ACTUADORES MECANICOS</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5"><h6 class="text-center">SISTEMA NEUMATICO/HIDRAULICO</h6></td>
+									</tr>
+									<tr class="sistemaNeumatico-item_1">
+										<td>VALVULAS, CONTROLES Y REGULADORES DE PRESION Y/O FLUJO</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaNeumatico-item_2">
+										<td>COMPRESOR Y/O TURBINA</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaNeumatico-item_3">
+										<td>MANGUERAS, TUBERIAS, ACOPLES Y EMPAQUES</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaNeumatico-item_4">
+										<td>FILTROS, TRAMPAS DE AGUA, EMPAQUES, ACOPLES</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5"><h6 class="text-center">SISTEMA DE VENTILACION MECANICA</h6></td>
+									</tr>
+									<tr class="sistemaVentilacion-item_1">
+										<td>PARAMETROS Y MODULOS DE VENTILACION</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaVentilacion-item_2">
+										<td>ABSORBEDOR, FLUELLE Y APL</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="sistemaVentilacion-item_3">
+										<td>ACUMULADORES Y/O ACTUADORES NEUMATICOS</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5"><h6 class="text-center">INSPECCION FINAL</h6></td>
+									</tr>
+									<tr class="inspeccionFinal-item_1">
+										<td>ESTADO GENERAL</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="inspeccionFinal-item_2">
+										<td>PRUEBAS FUNCIONALES</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr class="inspeccionFinal-item_3">
+										<td>SE ENTREGA FUNCIONANDO EN COMPAÑIA DEL OPERADOR</td>
+										<td>
+											<select class="form-control form-control-sm estado">
+												<option value="PASA">PASA</option>
+												<option value="FALLA">FALLA</option>
+												<option value="N/A">N/A</option>				
+											</select>
+										</td>
+										<td>
+											<input type="text" class="form-control form-control-sm observacion" placeholder="Observaciones">
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5"><h6 class="text-center">OBSERVACIONES GENERALES</h6></td>
+									</tr>
+									<tr>
+										<td colspan="5"><textarea rows="2" class="form-control observacionesGenerales"></textarea></td>
+									</tr>
+									<!-- // -->
+								</table>
+								<br>
+								<button type="button" class="btn btn-primary mr-2" id="guardarReporte" data-dismiss="modal">Guardar</button>
+								<button class="btn btn-dark" onClick="history.back();">Cancelar</button>
+							</form>
+						</div>
+						
+						';
+						}
+					
+					}
+					break;
 				case 'getDireccion':
 					$sql=$con->prepare('SELECT * FROM clientes WHERE id = :P1 AND fechaEliminacion IS NULL');
 					$resultado=$sql->execute(array('P1'=>$_POST['id']));

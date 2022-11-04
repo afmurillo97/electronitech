@@ -74,15 +74,17 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular variable');
 
 											echo '
-												<table class="table table-hover">
-												<tr>
-													<th>Variable</th>
-													<th>Unidad Texto</th>
-													<th>Signo</th>
-													<th>Tipo de Variable</th>
-													<th>Estado</th>
-													<th>Acción</th>
-												</tr>
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Variable</th>
+															<th>Unidad Texto</th>
+															<th>Signo</th>
+															<th>Tipo de Variable</th>
+															<th class="no-sort">Estado</th>
+															<th class="no-sort">Acción</th>
+														</tr>
+													</thead>
 											';
 
 											foreach (getVariables($inicial, $cantPagina) as $fila) {
