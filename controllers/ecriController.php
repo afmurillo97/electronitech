@@ -135,7 +135,7 @@
 									<form class="forms-sample">
 										<input type="hidden" id="id" value="'.$fila['id'].'">
 										<div class="form-group row">
-											<label class="col-sm-3 col-form-label">Descripcion</label>
+											<label class="col-sm-3 col-form-label">Código</label>
 											<div class="col-sm-9">
 												<input type="text" class="form-control" id="codigo" value="'.$fila['codigo'].'">
 											</div>
