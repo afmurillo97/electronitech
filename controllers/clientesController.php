@@ -136,7 +136,8 @@
 							$checked=($fila['fechaEliminacion']==NULL) ? 'checked' : '';
 							$logo = !empty($fila['logo']) ? '<a target="_blank" href="http://'.$fila['logo'].'"><span class="mdi mdi-file-pdf"></span></a>' : '';
 
-							$direccion=json_decode($fila['direccion'])[0];
+							$direccion = !empty(json_decode($fila['direccion'])[0]) ? json_decode($fila['direccion'])[0] : "No hay direccion@Sin ciudad";
+							// $direccion=json_decode($fila['direccion'])[0];
 							$direccionYciudad = explode('@', $direccion);
 
 							echo '
@@ -279,8 +280,8 @@
 												<div class="form-group">
 													<label class="col-sm-3 col-form-label"></label>
 													<div class="col-sm-9 form-inline">';
-														$cantidad=count(json_decode($fila['direccion']));
-														$direccion = json_decode($fila['direccion']);
+														$cantidad = !empty(json_decode($fila['direccion'])) ? count(json_decode($fila['direccion'])) : 1;
+														$direccion = !empty(json_decode($fila['direccion'])) ? json_decode($fila['direccion']) : array(' @ ');
 														$direccionYciudad = explode('@', $direccion[0]);	
 
 														echo '
