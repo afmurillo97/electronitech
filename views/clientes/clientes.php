@@ -95,7 +95,7 @@
 											foreach (getClientes($inicial, $cantPagina) as $fila) {
 												$logo = !empty($fila['logo']) ? '<a target="_blank" href="http://'.$fila['logo'].'"><span class="mdi mdi-file-pdf"></span></a>' : '';
 
-												$direccion=json_decode($fila['direccion'])[0];
+												$direccion = !empty(json_decode($fila['direccion'])[0]) ? json_decode($fila['direccion'])[0] : 'No hay direccion@Sin ciudad';
 												$direccionYciudad = explode('@', $direccion);
 											
 												echo '
