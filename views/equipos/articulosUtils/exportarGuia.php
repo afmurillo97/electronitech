@@ -349,7 +349,6 @@
 					<td style="width: 36%;">$ '.number_format($costoSinIVA).'</td>
 				</tr>
 			</table><br>';	
-
 		}
 
 		$sql3="SELECT * FROM relaciones WHERE (idPrincipal=\"$idEquipo\" AND modulo='equipos')";
