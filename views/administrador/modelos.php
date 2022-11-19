@@ -113,7 +113,7 @@
 											echo '
 												</table>
 												<nav aria-label="Page navigation example">
-													<ul class="pagination pagination-sm justify-content-center">
+													<ul class="pagination pagination-sm">
 											';
 											for ($i=1; $i<=$paginas; $i++) {
 												$active=$actual==$i ? 'active' : '';
