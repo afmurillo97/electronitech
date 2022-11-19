@@ -94,7 +94,7 @@
 										<option value="NaN">Seleccione</option>
 										<?php 
 											foreach (getTipoEquipo() as $fila) {
-												echo '<option value="'.$fila['id'].'">'.$fila['nombre'].'</option>';
+												echo '<option value="'.$fila['id'].'">'.$fila['nombre'].' ('.$fila['codigo'].')</option>';
 											}
 										?>
 									</select>
