@@ -59,25 +59,35 @@
 					$resultado=$sql->execute(array('P1'=>$_POST['termino']));
 					$resultado=$sql->fetchAll();
 					$num=$sql->rowCount();
+					$totalActivos=totalActivos();
+					$paginas=ceil($totalActivos/10);
+					$actual=$_REQUEST['pagina'];
+					$cantPagina=10;
+					$inicial=($actual-1)*$cantPagina;
 
 					if ($num>=1) {
 						$editar=permisosItem($_SESSION['idUsuario'], 'editar proveedores');
 						$anular=permisosItem($_SESSION['idUsuario'], 'anular proveedores');
 
 						echo '
-							<table class="table table-hover">
-								<tr>
-									<th>Nombre</th>
-									<th>Nit</th>
-									<th>Representante</th>
-									<th>Dirección</th>
-									<th>Celular</th>
-									<th>Ciudad</th>
-									<th>E-mail</th>
-									<th>Régimen</th>
-									<th>Estado</th>
-									<th>Acción</th>
-								</tr>
+							<table class="table table-hover sort">
+								<thead>
+									<tr>
+										<th colspan="10"><label style="font-size: 20px;">'.$totalActivos.' Proveedores encontrados </label></th>
+									</tr>
+									<tr>
+										<th>Razón Social</th>
+										<th>Nit</th>
+										<th>Representante</th>
+										<th>Dirección</th>
+										<th>Celular</th>
+										<th>Ciudad</th>
+										<th>E-mail</th>
+										<th>Régimen</th>
+										<th class="no-sort">Estado</th>
+										<th class="no-sort">Acción</th>
+									</tr>
+								</thead>
 						';
 						foreach ($resultado as $fila) {
 							$checked=($fila['fechaEliminacion']==NULL) ? 'checked' : '';

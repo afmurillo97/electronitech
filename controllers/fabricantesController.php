@@ -59,22 +59,28 @@
 					$resultado=$sql->execute(array('P1'=>$_POST['termino']));
 					$resultado=$sql->fetchAll();
 					$num=$sql->rowCount();
+					$totalActivos=totalActivos();
 
 					if ($num>=1) {
 						$editar=permisosItem($_SESSION['idUsuario'], 'editar fabricantes');
 						$anular=permisosItem($_SESSION['idUsuario'], 'anular fabricantes');
 
 						echo '
-							<table class="table table-hover">
-								<tr>
-									<th>Nombre</th>
-									<th>Celular</th>
-									<th>Dirección</th>
-									<th>Ciudad</th>
-									<th>E-mail</th>
-									<th>Estado</th>
-									<th>Acción</th>
-								</tr>
+							<table class="table table-hover sort">
+								<thead>
+									<tr>
+										<th colspan="7"><label style="font-size: 20px;">'.$totalActivos.' Fabricantes encontrados </label></th>
+									</tr>
+									<tr>
+										<th>Nombre</th>
+										<th>Celular</th>
+										<th>Dirección</th>
+										<th>Ciudad</th>
+										<th>E-mail</th>
+										<th class="no-sort">Estado</th>
+										<th class="no-sort">Acción</th>
+									</tr>	
+								</thead>
 						';
 						foreach ($resultado as $fila) {
 							$checked=($fila['fechaEliminacion']==NULL) ? 'checked' : '';
