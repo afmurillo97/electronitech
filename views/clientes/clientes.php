@@ -17,7 +17,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Corona · Clientes</title>
+	<title>Clientes</title>
 	<!-- HEAD -->
 	<?php include_once '../layouts/head.php'; ?>
 	<!-- END HEAD -->
@@ -79,6 +79,9 @@
 											echo '
 												<table class="table table-hover sort">
 													<thead>
+														<tr>
+															<th colspan="8"><label style="font-size: 20px;">'.$totalActivos.' Clientes encontrados </label></th>
+														</tr>
 														<tr>
 															<th>Nombre</th>
 															<th>Nit</th>

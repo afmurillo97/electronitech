@@ -17,7 +17,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Grupos Servicio</title>
+	<title>Grupo Servicio</title>
 	<!-- HEAD -->
 	<?php include_once '../layouts/head.php'; ?>
 	<!-- END HEAD -->
@@ -39,7 +39,7 @@
 			<div class="main-panel">
 				<div class="content-wrapper">
 					<div class="page-header">
-						<h3 class="page-title">Grupos Servicio</h3>
+						<h3 class="page-title">Grupo Servicio</h3>
 						<nav aria-label="breadcrumb">
 						<?php
 							echo '
@@ -76,6 +76,9 @@
 											echo '
 												<table class="table table-hover sort">
 													<thead>
+														<tr>
+															<th colspan="4"><label style="font-size: 20px;">'.$totalActivos.' Grupos creados </label></th>
+														</tr>
 														<tr>
 															<th>Nombre</th>
 															<th>Descripción</th>

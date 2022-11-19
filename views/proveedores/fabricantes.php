@@ -74,8 +74,12 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular fabricantes');
 
 											echo '
+												
 												<table class="table table-hover sort">
 													<thead>
+														<tr>
+															<th colspan="7"><label style="font-size: 20px;">'.$totalActivos.' Fabricantes encontrados </label></th>
+														</tr>
 														<tr>
 															<th>Nombre</th>
 															<th>Celular</th>

@@ -77,6 +77,9 @@
 												<table class="table table-hover sort">
 													<thead>
 														<tr>
+															<th colspan="6"><label style="font-size: 20px;">'.$totalActivos.' Equipos encontrados </label></th>
+														</tr>
+														<tr>
 															<th class="no-sort">Foto</th>
 															<th>Marca</th>
 															<th>Modelo</th>

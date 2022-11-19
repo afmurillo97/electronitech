@@ -75,7 +75,10 @@
 
 											echo '
 												<table class="table table-hover sort">
-													<thead>	
+													<thead>
+														<tr>
+															<th colspan="4"><label style="font-size: 20px;">'.$totalActivos.' Protocolos creados </label></th>
+														</tr>
 														<tr>
 															<th>Nombre</th>
 															<th>Descripción</th>

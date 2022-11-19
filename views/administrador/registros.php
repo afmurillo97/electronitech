@@ -77,6 +77,9 @@
 												<table class="table table-hover sort">
 													<thead>
 														<tr>
+															<th colspan="6"><label style="font-size: 20px;">'.$totalActivos.' Registros creados </label></th>
+														</tr>
+														<tr>
 															<th>Nombre</th>
 															<th>Tipo Registro</th>
 															<th class="no-sort">Documento</th>

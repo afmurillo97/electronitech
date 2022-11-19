@@ -77,6 +77,9 @@
 												<table class="table table-hover table-responsive sort">
 													<thead>
 														<tr>
+															<th colspan="8"><label style="font-size: 20px;">'.$totalActivos.' Usuarios Creados </label></th>
+														</tr>
+														<tr>
 															<th>Nombres</th>
 															<th>Identificación</th>
 															<th>Celular</th>

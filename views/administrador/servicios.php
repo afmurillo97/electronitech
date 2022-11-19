@@ -77,6 +77,9 @@
 												<table class="table table-hover sort">
 													<thead>
 														<tr>
+															<th colspan="5"><label style="font-size: 20px;">'.$totalActivos.' Servicios creados </label></th>
+														</tr>
+														<tr>
 															<th>Codigo</th>
 															<th>Grupo Servicio</th>
 															<th>Descripción</th>

@@ -9,7 +9,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Corona · Roles</title>
+	<title>Roles</title>
 	<!-- HEAD -->
 	<?php include_once '../layouts/head.php'; ?>
 	<!-- END HEAD -->
@@ -55,6 +55,9 @@
 
 											echo '
 												<table class="table table-hover">
+													<tr>
+														<th colspan="3"><label style="font-size: 20px;">'.$totalActivos.' Roles Creados </label></th>
+													</tr>
 													<tr>
 														<th>Nombre</th>
 														<th>Descripción</th>

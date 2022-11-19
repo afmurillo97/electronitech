@@ -77,6 +77,9 @@
 												<table class="table table-hover sort">
 													<thead>
 														<tr>
+															<th colspan="6"><label style="font-size: 20px;">'.$totalActivos.' Variables Metrológicas creadas </label></th>
+														</tr>
+														<tr>
 															<th>Variable</th>
 															<th>Unidad Texto</th>
 															<th>Signo</th>

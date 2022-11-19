@@ -77,7 +77,10 @@
 												<table class="table table-hover sort">
 													<thead>
 														<tr>
-															<th>Nombre</th>
+															<th colspan="10"><label style="font-size: 20px;">'.$totalActivos.' Proveedores encontrados </label></th>
+														</tr>
+														<tr>
+															<th>Razón Social</th>
 															<th>Nit</th>
 															<th>Representante</th>
 															<th>Dirección</th>

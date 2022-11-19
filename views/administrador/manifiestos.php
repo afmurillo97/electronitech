@@ -77,6 +77,9 @@
 												<table class="table table-hover sort">
 													<thead>
 														<tr>
+															<th colspan="5"><label style="font-size: 20px;">'.$totalActivos.' Manifiestos creados </label></th>
+														</tr>
+														<tr>
 															<th>Manifiesto</th>
 															<th class="no-sort">Documento</th>
 															<th>Descripción</th>

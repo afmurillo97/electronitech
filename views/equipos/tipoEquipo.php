@@ -85,6 +85,9 @@
 												<table class="table table-hover sort">
 													<thead>
 														<tr>
+															<th colspan="7"><label style="font-size: 20px;">'.$totalActivos.' Tipos de Equipo encontrados </label></th>
+														</tr>
+														<tr>
 															<th>Tipo Equipo</th>
 															<th>Riesgo</th>
 															<th>Descripción Biomedica</th>

@@ -77,6 +77,9 @@
 												<table class="table table-hover sort">
 													<thead>
 														<tr>
+															<th colspan="3"><label style="font-size: 20px;">'.$totalActivos.' Permisos Creados </label></th>
+														</tr>
+														<tr>
 															<th>Nombre</th>
 															<th>Descripción</th>
 															<th class="no-sort">Acción</th>
