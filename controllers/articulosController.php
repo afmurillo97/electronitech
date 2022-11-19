@@ -59,7 +59,7 @@
 		function getTipoEquipo() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM tipoEquipo WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM ecri WHERE fechaEliminacion IS NULL');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -320,45 +320,69 @@
 					$resultado=$sql->execute(array('P1'=>$_POST['termino']));
 					$resultado=$sql->fetchAll();
 					$num=$sql->rowCount();
+					$totalActivos=totalActivos();
 
 					if ($num>=1) {
 						$editar=permisosItem($_SESSION['idUsuario'], 'editar equipos');
 						$anular=permisosItem($_SESSION['idUsuario'], 'anular equipos');
 
 						echo '
-							<table class="table table-hover">
-								<tr>
-									<th>Tipo Equipo</th>
-									<th>Marca</th>
-									<th>Modelo</th>
-									<th>Ubicacion</th>
-									<th>Cliente</th>
-									<th>Estado</th>
-									<th>Acción</th>
-								</tr>
+							<table class="table table-hover sort">
+								<thead>
+									<tr>
+										<th colspan="10"><label style="font-size: 20px;">'.$totalActivos.' Articulos encontrados </label></th>
+									</tr>
+									<tr>
+										<th>Tipo Equipo</th>
+										<th>Marca</th>
+										<th>Modelo</th>
+										<th>Ubicacion</th>
+										<th class="no-sort">Guia</th>
+										<th class="no-sort">Reporte</th>
+										<th class="no-sort">PDF Reporte</th>
+										<th>Cliente</th>
+										<th class="no-sort">Estado</th>
+										<th class="no-sort">Acción</th>
+									</tr>
+								</thead>
 						';
 						foreach ($resultado as $fila) {
 							$checked=($fila['fechaEliminacion']==NULL) ? 'checked' : '';
 							echo '
-								<tr>
-									<input type="hidden" class="idArticulo" value="'.$fila['id'].'">
-									<td>'.$fila['tipoEquipo'].'</td>
-									<td>'.$fila['marca'].'</td>
-									<td>'.$fila['modelo'].'</td>
-									<td>'.$fila['ubicacion'].'</td>
-									<td>'.$fila['cliente'].'</td>
-									<td>
-										<div class="custom-control custom-switch" '.$anular.'>
-											<input type="checkbox" class="custom-control-input checkbox" id="customSwitch'.$fila['id'].'" '.$checked.'>
-											<label class="custom-control-label" for="customSwitch'.$fila['id'].'"></label>
-										</div>
-									</td>
-									<td>
-										<button type="button" class="btn btn-warning btn-sm formEditarEquipo" data-toggle="modal" data-target=".bd-example-modal-lg" title="Editar Equipo" '.$editar.'>
-											<span class="mdi mdi-pencil"></span>
-										</button>
-									</td>
-								</tr>
+									<tr>
+										<input type="hidden" class="idArticulo" value="'.$fila['id'].'">
+										<td>'.$fila['tipoEquipo'].'</td>
+										<td>'.$fila['marca'].'</td>
+										<td>'.$fila['modelo'].'</td>
+										<td>'.$fila['ubicacion'].'</td>
+										<td title="Descargar Guia">
+											<a href="../../views/equipos/articulosUtils/exportarGuia.php?id='.$fila['id'].'" class="btn btn-primary btn-sm" target="_blank">
+												<span class="mdi mdi-file-pdf"></span>
+											</a>
+										</td>
+										<td title="Crear Reporte">
+											<button type="button" class="btn btn-success btn-sm formEditarReporte" data-toggle="modal" data-target=".bd-example-modal-lg2" title="Generar Reporte" '.$editar.'>
+												<span class="mdi mdi-book-open-page-variant"></span>
+											</button>
+										</td>
+										<td title="Descargar Reporte">
+											<a href="../../views/equipos/articulosUtils/exportarReporte.php?id='.$fila['id'].'" class="btn btn-dark btn-sm " target="_blank">
+												<span class="mdi mdi-file-pdf outline"></span>
+											</a>
+										</td>
+										<td>'.$fila['cliente'].'</td>
+										<td>
+											<div class="custom-control custom-switch" '.$anular.'>
+												<input type="checkbox" class="custom-control-input checkbox" id="customSwitch'.$fila['id'].'" checked>
+												<label class="custom-control-label" for="customSwitch'.$fila['id'].'"></label>
+											</div>
+										</td>
+										<td>
+											<button type="button" class="btn btn-warning btn-sm formEditarArticulo" data-toggle="modal" data-target=".bd-example-modal-lg" title="Editar Articulo" '.$editar.'>
+												<span class="mdi mdi-pencil"></span>
+											</button>
+										</td>
+									</tr>
 							';
 						}
 						echo '</table>';
