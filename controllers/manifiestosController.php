@@ -64,18 +64,18 @@
 					}else{
 						echo FALSE;
 					}
-				}else {
-					$sql=$con->prepare('INSERT INTO manifiestos (nombre, descripcion) VALUES (:P1,:P2)');
-					$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['descripcion']));
-					$num=$sql->rowCount();
-					
-					if ($num>=1) {
-						echo TRUE;
-					}else{
-						echo FALSE;
+					}else {
+						$sql=$con->prepare('INSERT INTO manifiestos (nombre, descripcion) VALUES (:P1,:P2)');
+						$resultado=$sql->execute(array('P1'=>$_POST['nombre'], 'P2'=>$_POST['descripcion']));
+						$num=$sql->rowCount();
+
+						if ($num>=1) {
+							echo TRUE;
+						}else{
+							echo FALSE;
+						}
 					}
-				}
-				break;
+					break;
 				case 'buscador':
 					$sql=$con->prepare('SELECT * FROM manifiestos WHERE nombre LIKE "%":P1"%"');
 					$resultado=$sql->execute(array('P1'=>$_POST['termino']));
