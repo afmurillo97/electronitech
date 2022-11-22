@@ -100,7 +100,7 @@
 
 												$direccion = !empty(json_decode($fila['direccion'])[0]) ? json_decode($fila['direccion'])[0] : 'No hay direccion@Sin ciudad';
 												$direccionYciudad = explode('@', $direccion);
-												$totalDirecciones = count(json_decode($fila['direccion']));
+												$totalDirecciones = !empty(json_decode($fila['direccion'])) ? count(json_decode($fila['direccion'])) : 0;
 											
 												echo '
 													<tr>
