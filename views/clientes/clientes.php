@@ -100,13 +100,14 @@
 
 												$direccion = !empty(json_decode($fila['direccion'])[0]) ? json_decode($fila['direccion'])[0] : 'No hay direccion@Sin ciudad';
 												$direccionYciudad = explode('@', $direccion);
+												$totalDirecciones = count(json_decode($fila['direccion']));
 											
 												echo '
 													<tr>
 														<input type="hidden" class="idCliente" value="'.$fila['id'].'">
 														<td>'.$fila['nombre'].'</td>
 														<td>'.$fila['nit'].'</td>
-														<td>'.$direccionYciudad[0].', '.$direccionYciudad[1].'</td>
+														<td>('.$totalDirecciones.') '.$direccionYciudad[0].' - '.$direccionYciudad[1].'</td>
 														<td>'.$fila['telefono'].'</td>
 														<td>'.$fila['email'].'</td>
 														<td>'.$logo.'</td>
