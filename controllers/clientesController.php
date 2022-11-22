@@ -120,17 +120,19 @@
 						$anular=permisosItem($_SESSION['idUsuario'], 'anular clientes');
 
 						echo '
-							<table class="table table-hover">
-								<tr>
-									<th>Nombre</th>
-									<th>Nit</th>
-									<th>Dirección</th>
-									<th>Telefono</th>
-									<th>E-mail</th>
-									<th>Logo</th>
-									<th>Estado</th>
-									<th>Acción</th>
-								</tr>
+							<table class="table table-hover sort">
+								<thead>
+									<tr>
+										<th>Nombre</th>
+										<th>Nit</th>
+										<th>Dirección</th>
+										<th>Telefono</th>
+										<th>E-mail</th>
+										<th class="no-sort">Logo</th>
+										<th	class="no-sort">Estado</th>
+										<th	class="no-sort">Acción</th>
+									</tr>
+								</thead>
 						';
 						foreach ($resultado as $fila) {
 							$checked=($fila['fechaEliminacion']==NULL) ? 'checked' : '';
