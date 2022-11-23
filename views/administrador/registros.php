@@ -17,7 +17,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Registros</title>
+	<title>Registros INVIMA</title>
 	<!-- HEAD -->
 	<?php include_once '../layouts/head.php'; ?>
 	<!-- END HEAD -->
@@ -39,7 +39,7 @@
 			<div class="main-panel">
 				<div class="content-wrapper">
 					<div class="page-header">
-						<h3 class="page-title">Registros</h3>
+						<h3 class="page-title">Registros INVIMA</h3>
 						<nav aria-label="breadcrumb">
 						<?php
 							echo '
