@@ -59,7 +59,7 @@
 										<input type="text" id="entrada" name="termino" class="form-control" placeholder="Ingrese Username">
 									</form>
 
-									<div id="resultado">
+									<div id="resultado" class="table-responsive">
 									<?php
 										include '../../controllers/usuariosController.php';
 
@@ -74,7 +74,7 @@
 											$anular=permisosItem($_SESSION['idUsuario'], 'anular usuarios');
 
 											echo '
-												<table class="table table-hover table-responsive sort">
+												<table class="table table-hover sort">
 													<thead>
 														<tr>
 															<th colspan="8"><label style="font-size: 20px;">'.$totalActivos.' Usuarios Creados </label></th>
