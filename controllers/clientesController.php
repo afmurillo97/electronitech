@@ -24,7 +24,7 @@
 		function getClientes($inicio, $fin) {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM clientes WHERE fechaEliminacion IS NULL LIMIT :P1,:P2');
+			$sql=$con->prepare('SELECT * FROM clientes WHERE fechaEliminacion IS NULL ORDER BY nombre LIMIT :P1,:P2');
 			$sql->bindParam(':P1', $inicio, PDO::PARAM_INT);
 			$sql->bindParam(':P2', $fin, PDO::PARAM_INT);
 			$resultado=$sql->execute();
@@ -42,7 +42,7 @@
 		function getFullClientes() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM clientes WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM clientes WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -58,7 +58,7 @@
 		function getServicios() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM servicios WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM servicios WHERE fechaEliminacion IS NULL ORDER BY descripcion');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -110,7 +110,7 @@
 					}
 					break;
 				case 'buscador':
-					$sql=$con->prepare('SELECT * FROM clientes WHERE nombre LIKE "%":P1"%"');
+					$sql=$con->prepare('SELECT * FROM clientes WHERE nombre LIKE "%":P1"%" OR  nit LIKE "%":P1"%" OR  codigo LIKE "%":P1"%" OR  representante LIKE "%":P1"%"');
 					$resultado=$sql->execute(array('P1'=>$_POST['termino']));
 					$resultado=$sql->fetchAll();
 					$num=$sql->rowCount();
@@ -165,7 +165,8 @@
 								</tr>
 							';
 						}
-						echo '</table>';
+						echo '</table>
+								<label><a href="clientes.php?pagina=1">Todos los resultados</a></label>';
 					}else{
 						echo FALSE;
 					}

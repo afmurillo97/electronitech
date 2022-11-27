@@ -24,7 +24,7 @@
 		function getRutinas($inicio, $fin) {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT rutinas.*, categorias.descripcion AS categoria FROM rutinas INNER JOIN categorias ON categorias.id=rutinas.idCategoria WHERE rutinas.fechaEliminacion IS NULL LIMIT :P1,:P2');
+			$sql=$con->prepare('SELECT rutinas.*, categorias.descripcion AS categoria FROM rutinas INNER JOIN categorias ON categorias.id=rutinas.idCategoria WHERE rutinas.fechaEliminacion IS NULL ORDER BY descripcion LIMIT :P1,:P2');
 			$sql->bindParam(':P1', $inicio, PDO::PARAM_INT);
 			$sql->bindParam(':P2', $fin, PDO::PARAM_INT);
 			$resultado=$sql->execute();

@@ -24,7 +24,7 @@
 		function getTipoEquipo($inicio, $fin) {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT tipoEquipo.*, descripcionBiomedica.nombre AS descripcion, protocolos.nombre AS protocolo, ecri.nombre AS ecri FROM tipoEquipo INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=tipoEquipo.idDescripcionBiomedica INNER JOIN protocolos ON protocolos.id=tipoEquipo.idProtocolo INNER JOIN ecri ON ecri.id=tipoEquipo.idEcri WHERE tipoEquipo.fechaEliminacion IS NULL LIMIT :P1,:P2');
+			$sql=$con->prepare('SELECT tipoEquipo.*, descripcionBiomedica.nombre AS descripcion, protocolos.nombre AS protocolo, ecri.nombre AS ecri FROM tipoEquipo INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=tipoEquipo.idDescripcionBiomedica INNER JOIN protocolos ON protocolos.id=tipoEquipo.idProtocolo INNER JOIN ecri ON ecri.id=tipoEquipo.idEcri WHERE tipoEquipo.fechaEliminacion IS NULL ORDER BY ecri.nombre LIMIT :P1,:P2');
 			$sql->bindParam(':P1', $inicio, PDO::PARAM_INT);
 			$sql->bindParam(':P2', $fin, PDO::PARAM_INT);
 			$resultado=$sql->execute();
@@ -42,7 +42,7 @@
 		function getDescripcion() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM descripcionBiomedica WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM descripcionBiomedica WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -58,7 +58,7 @@
 		function getProtocolo() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM protocolos WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM protocolos WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();

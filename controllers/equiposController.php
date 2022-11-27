@@ -25,7 +25,7 @@
 		function getEquipos($inicio, $fin) {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT marcas.nombre AS marca, modelos.nombre AS modelo, equipos.* FROM equipos INNER JOIN marcas ON marcas.id=equipos.idMarca INNER JOIN modelos ON modelos.id=equipos.idModelo WHERE equipos.fechaEliminacion IS NULL LIMIT :P1,:P2');
+			$sql=$con->prepare('SELECT marcas.nombre AS marca, modelos.nombre AS modelo, equipos.* FROM equipos INNER JOIN marcas ON marcas.id=equipos.idMarca INNER JOIN modelos ON modelos.id=equipos.idModelo WHERE equipos.fechaEliminacion IS NULL ORDER BY marcas.nombre LIMIT :P1,:P2');
 			$sql->bindParam(':P1', $inicio, PDO::PARAM_INT);
 			$sql->bindParam(':P2', $fin, PDO::PARAM_INT);
 			$resultado=$sql->execute();
@@ -254,7 +254,7 @@
 					}
 					break;
 				case 'buscador':
-					$sql=$con->prepare('SELECT marcas.nombre AS marca, modelos.nombre AS modelo, equipos.* FROM equipos INNER JOIN marcas ON marcas.id=equipos.idMarca INNER JOIN modelos ON modelos.id=equipos.idModelo WHERE marcas.nombre LIKE "%":P1"%"');
+					$sql=$con->prepare('SELECT marcas.nombre AS marca, modelos.nombre AS modelo, equipos.* FROM equipos INNER JOIN marcas ON marcas.id=equipos.idMarca INNER JOIN modelos ON modelos.id=equipos.idModelo WHERE marcas.nombre LIKE "%":P1"%" OR modelos.nombre LIKE "%":P1"%"');
 					$resultado=$sql->execute(array('P1'=>$_POST['termino']));
 					$resultado=$sql->fetchAll();
 					$num=$sql->rowCount();
@@ -269,17 +269,20 @@
 									<th>Foto</th>
 									<th>Marca</th>
 									<th>Modelo</th>
-									<th>Registro</th>
+									<th>Riesgo Invima</th>
 									<th>Estado</th>
 									<th>Acción</th>
 								</tr>
 						';
 						foreach ($resultado as $fila) {
 							$checked=($fila['fechaEliminacion']==NULL) ? 'checked' : '';
+							$documento=$fila['documento'];
+							$urlFotoEquipo = explode('electronitech/', $documento);
+							$fotoEquipo = !empty($fila['documento']) ? '<a target="_blank" href="http://'.$fila['documento'].'"><img src="../../'.$urlFotoEquipo[1].'" alt="" width="10" height="10"></a>' : '';
 							echo '
 								<tr>
 									<input type="hidden" class="idEquipo" value="'.$fila['id'].'">
-									<td><a href="'.$fila['documento'].'"><span class="mdi mdi-file-pdf"></span></a></td>
+									<td>'.$fotoEquipo.'</td>
 									<td>'.$fila['marca'].'</td>
 									<td>'.$fila['modelo'].'</td>
 									<td>'.$fila['registro'].'</td>
