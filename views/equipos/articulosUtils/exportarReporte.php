@@ -120,7 +120,7 @@
 					<tr>	
 						<td style="width: 25%; text-align: center;" ><strong>CÓDIGO:</strong> '.$codDoc.'</td>
 						<td rowspan="2" style="width: 45%;"><h4 style="text-align: center;">'.$cliente.'</h4></td>
-						<td rowspan="4" style="width: 30%;"> <img src="../../../assets/images/template/Login_bg.jpg" alt="" width="220" height="110"> </td>
+						<td rowspan="4" style="width: 30%;"> <img src="../../../assets/images/template/electronitech.jpg" alt="" width="220" height="110"> </td>
 					</tr>
 					<tr>
 						<td style="text-align: center;"><strong>VERSIÓN:</strong> 1.0.0</td>

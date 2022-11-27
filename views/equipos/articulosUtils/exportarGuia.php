@@ -49,9 +49,24 @@
 		}
 	}
 
+	function getLogoCliente($con, $id){
+		$sql="SELECT * FROM clientes WHERE (id=\"$id\")";
+		$query=$con->query($sql);
+		$resultado=$query->fetch_all(MYSQLI_ASSOC);
+		$num=$query->num_rows;
+
+		if ($num>=1) {
+			foreach ($resultado as $fila) {
+				return ['logo'=>$fila['logo']];
+			}
+		}else{
+			return false;
+		}
+	}
+
 	$id=$_REQUEST['id'];
 
-	$sql="SELECT articulosView.*, descripcionBiomedica.nombre AS descripcionBiomedica FROM articulosView INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=articulosView.idDescripcionBiomedica WHERE (articulosView.id=\"$id\")";
+	$sql="SELECT articulosView.*, descripcionBiomedica.nombre AS descripcionBiomedica, clientes.logo AS logo FROM articulosView INNER JOIN clientes ON clientes.id=articulosView.idCliente INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=articulosView.idDescripcionBiomedica WHERE (articulosView.id=\"$id\")";
 	$query=$con->query($sql);
 	$resultado=$query->fetch_all(MYSQLI_ASSOC);
 	$num=$query->num_rows;
@@ -72,13 +87,17 @@
 			$riesgo=$fila['riesgo'];
 			$descripcionBiomedica=$fila['descripcionBiomedica'];
 			$direccion = explode('@', $fila['direccion']);
-
+			// $logocliente1 = !empty(getLogoCliente($con, $fila['idCliente'])) ? getLogoCliente($con, $fila['idCliente']) : '127.0.0.1/electronitech/assets/images/logosClientes/electronitech.jpg';
+			// $urlLogoCliente = explode('electronitech/', $logocliente);
+			$logo = (!empty($fila['logo'])) ? $fila['logo'] : '127.0.0.1/electronitech/assets/images/logosClientes/electronitech.jpg';
+			$logoCliente = explode('electronitech/', $logo);
+			$fechaCreacion = $fila['fechaCreacion'];
 
 			$cuerpo = '
 				<!-- ENCABEZADO 1 PAG -->
 				<table border="1" style="width: 100%;">
 					<tr>	
-						<td rowspan="3" style="width: 30%;"> <img src="../../../assets/images/template/Login_bg.jpg" alt="" width="220" height="120"> </td>
+						<td rowspan="3" style="width: 30%;"> <img src="../../../'.$logoCliente[1].'" alt="" width="220" height="120"> </td>
 						<td rowspan="2" style="width: 45%;"><h4 style="text-align: center;">'.$cliente.'</h4></td>
 						<td style="width: 25%;"><strong>CÓDIGO:</strong> '.$codDoc.'</td>
 					</tr>
@@ -87,7 +106,7 @@
 					</tr>
 					<tr>
 						<td><h4 style="text-align: center;">HOJA DE VIDA DE EQUIPO MEDICO</h4></td>
-						<td><strong>FECHA:</strong> '.date('d-m-Y').'</td>
+						<td><strong>FECHA:</strong>'.$fechaCreacion.'</td>
 					</tr>
 				</table><br>
 
@@ -163,46 +182,46 @@
 						<th colspan="3" style="text-align: center; font-size: 16px;">EQUIPO BIOMEDICO</th>
 					</tr>
 					<tr>
-						<th style="width: 30%;">NOMBRE:</th>
-						<td style="width: 46%;">'.$tipoEquipo.'</td>
-						<td rowspan="13" style="width: 24%;"> <img src="../../../'.$urlFotoEquipo[1].'" alt="" width="160" height="300"> </td>
+						<th style="width: 25%;">NOMBRE:</th>
+						<td style="width: 35%;">'.$tipoEquipo.'</td>
+						<td rowspan="11" style="width: 38%;" align="center"> <img src="../../../'.$urlFotoEquipo[1].'" alt="" width="160" height="300"> </td>
 					</tr>
 					<tr>
-						<th width="30%"> MARCA:</th>
-						<td width="46%">'.$marca.'</td>
+						<th width="25%"> MARCA:</th>
+						<td width="35%">'.$marca.'</td>
 					</tr>
 					<tr>
-						<th width="30%"> MODELO:</th>
-						<td width="46%">'.$modelo.'</td>
+						<th width="25%"> MODELO:</th>
+						<td width="35%">'.$modelo.'</td>
 					</tr>
 					<tr>
-						<th width="30%"> SERIE (S/N):</th>
-						<td width="46%">'.$serie.'</td>
+						<th width="25%"> SERIE (S/N):</th>
+						<td width="35%">'.$serie.'</td>
 					</tr>
 					<tr>
-						<th width="30%"> CÓDIGO ECRI:</th>
-						<td width="46%">'.$codigoEcri.'</td>
+						<th width="25%"> CÓDIGO ECRI:</th>
+						<td width="35%">'.$codigoEcri.'</td>
 					</tr>
 					<tr>
-						<th width="30%"> No. INVENTARIO:</th>
-						<td width="46%">'.$inventario.'</td>
+						<th width="25%"> No. INVENTARIO:</th>
+						<td width="35%">'.$inventario.'</td>
 					</tr>
 				';
 
 				switch ($tipoRegistro) {
-					case 'RS':
+					case 'REGISTRO SANITARIO':
 				$cuerpo .= '
 					<tr>
-						<th width="30%"> REGISTRO INVIMA:</th>
-						<td width="46%">RS:&nbsp;&nbsp;X&nbsp;&nbsp;PC:____NR:____</td>
+						<th width="25%"> REGISTRO INVIMA:</th>
+						<td width="35%">RS:&nbsp;&nbsp;X&nbsp;&nbsp;PC:____NR:____</td>
 					</tr>
 				';
 						break;
-					case 'PC':
+					case 'PERMISO COMERCIALIZACION':
 				$cuerpo .= '
 					<tr>
-						<th width="30%"> REGISTRO INVIMA:</th>
-						<td width="46%">RS:____PC:&nbsp;&nbsp;X&nbsp;&nbsp;NR:____</td>
+						<th width="25%"> REGISTRO INVIMA:</th>
+						<td width="35%">RS:____PC:&nbsp;&nbsp;X&nbsp;&nbsp;NR:____</td>
 					</tr>
 				';
 						break;
@@ -210,8 +229,8 @@
 					default:
 				$cuerpo .= '
 					<tr>
-						<th width="30%"> REGISTRO INVIMA:</th>
-						<td width="46%">RS:____PC:____NR:&nbsp;&nbsp;X&nbsp;&nbsp;</td>
+						<th width="25%"> REGISTRO INVIMA:</th>
+						<td width="35%">RS:____PC:____NR:&nbsp;&nbsp;X&nbsp;&nbsp;</td>
 					</tr>
 				';
 						break;
@@ -219,25 +238,25 @@
 
 				$cuerpo .= '
 					<tr>
-						<th width="30%"> No. REGISTRO:</th>
-						<td width="46%">'.$registro.'</td>
+						<th width="25%"> No. REGISTRO:</th>
+						<td width="35%">'.$registro.'</td>
 					</tr>
 					<tr>
-						<th width="30%"> CONDICION:</th>
-						<td width="46%">____________________________________________</td>
+						<th width="25%"> CONDICION:</th>
+						<td width="35%">________________________________</td>
 					</tr>
 			
 					<tr>
-						<th width="30%"> CLASIFICACION DE RIESGO:</th>
-						<td width="46%" style="background-color: '.$colorRiesgo.'; text-align: center; "> '.$riesgo.' </td>
+						<th width="25%"> CLASIFICACION DE RIESGO:</th>
+						<td width="35%" style="background-color: '.$colorRiesgo.'; text-align: center; "> '.$riesgo.' </td>
 					</tr>
 					<tr>
-						<th width="30%"> SERVICIO:</th>
-						<td width="46%">'.$servicio.'</td>
+						<th width="25%"> CLASIFICACION BIOMEDICA:</th>
+						<td width="35%">'.$descripcionBiomedica.'</td>
 					</tr>
 					<tr>
-						<th width="30%"> CLASIFICACION BIOMEDICA:</th>
-						<td width="46%">'.$descripcionBiomedica.'</td>
+						<th width="25%"> SERVICIO:</th>
+						<td colspan="2" width="75%">'.$servicio.'</td>
 					</tr>
 				</table><br>
 				<span style="position: absolute; bottom: 8px;">NR*: No Registra. NA*: No Aplica.</span>
@@ -362,7 +381,7 @@
 						<!-- ENCABEZADO 2 PAG -->
 						<table border="1" style="width: 100%;">
 							<tr>	
-								<td rowspan="3" style="width: 30%;"> <img src="../../../assets/images/template/Login_bg.jpg" alt="" width="220" height="120"> </td>
+								<td rowspan="3" style="width: 30%;"> <img src="../../../'.$logoCliente[1].'" alt="" width="220" height="120"> </td>
 								<td rowspan="2" style="width: 45%;"><h4 style="text-align: center;">'.$cliente.'</h4></td>
 								<td style="width: 25%;"><strong>CÓDIGO:</strong> '.$codDoc.'</td>
 							</tr>
@@ -371,7 +390,7 @@
 							</tr>
 							<tr>
 								<td><h4 style="text-align: center;">HOJA DE VIDA DE EQUIPO MEDICO</h4></td>
-								<td><strong>FECHA:</strong> '.date('d-m-Y').'</td>
+								<td><strong>FECHA:</strong>'.$fechaCreacion.'</td>
 							</tr>
 						</table><br>
 
