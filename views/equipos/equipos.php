@@ -83,7 +83,7 @@
 															<th class="no-sort">Foto</th>
 															<th>Marca</th>
 															<th>Modelo</th>
-															<th>Registro</th>
+															<th>Riesgo Invima</th>
 															<th class="no-sort">Estado</th>
 															<th class="no-sort">Acción</th>
 														</tr>
