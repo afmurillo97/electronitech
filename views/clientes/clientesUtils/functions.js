@@ -87,7 +87,7 @@ function nuevoCliente() {
 }
 
 function buscar(){
-	if ($('#entrada').val().length>0) {
+	// if ($('#entrada').val().length>0) {
 		$.ajax({
 			url: '../../controllers/clientesController.php',
 			type:'POST',
@@ -99,9 +99,7 @@ function buscar(){
 				$('.formEditarCliente').click(formEditarCliente);
 			}
 		});
-	}else{
-		$('#resultado').html('');
-	}
+	// }
 }
 
 function habilitarCliente() {
