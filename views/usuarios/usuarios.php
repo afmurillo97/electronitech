@@ -56,7 +56,7 @@
 								<div class="card-body">
 									<form class="nav-link" id="buscar" action="#" method="POST">
 										<input type="hidden" name="accion" value="buscador">
-										<input type="text" id="entrada" name="termino" class="form-control" placeholder="Ingrese Username">
+										<input type="text" id="entrada" name="termino" [formControl]="formGroup.controls['password']" autocomplete="new-password" class="form-control" placeholder="Ingrese Username">
 									</form>
 
 									<div id="resultado" class="table-responsive">
@@ -128,7 +128,7 @@
 											';
 											for ($i=1; $i<=$paginas; $i++) {
 												$active=$actual==$i ? 'active' : '';
-												echo '<li class="page-item '.$active.'"><a class="page-link" href="empleados.php?pagina='.$i.'">'.$i.'</a></li>';
+												echo '<li class="page-item '.$active.'"><a class="page-link" href="usuarios.php?pagina='.$i.'">'.$i.'</a></li>';
 											}
 											echo '
 													</ul>
