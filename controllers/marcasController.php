@@ -24,7 +24,7 @@
 		function getMarcas() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM marcas WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM marcas WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();

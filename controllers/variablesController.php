@@ -24,7 +24,7 @@
 		function getVariables($inicio, $fin) {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT variablesMetrologicas.*, tipoVariable.nombre AS tipoVariable FROM variablesMetrologicas INNER JOIN tipoVariable ON tipoVariable.id=variablesMetrologicas.idTipoVariable WHERE variablesMetrologicas.fechaEliminacion IS NULL LIMIT :P1,:P2');
+			$sql=$con->prepare('SELECT variablesMetrologicas.*, tipoVariable.nombre AS tipoVariable FROM variablesMetrologicas INNER JOIN tipoVariable ON tipoVariable.id=variablesMetrologicas.idTipoVariable WHERE variablesMetrologicas.fechaEliminacion IS NULL ORDER BY nombre LIMIT :P1,:P2');
 			$sql->bindParam(':P1', $inicio, PDO::PARAM_INT);
 			$sql->bindParam(':P2', $fin, PDO::PARAM_INT);
 			$resultado=$sql->execute();
