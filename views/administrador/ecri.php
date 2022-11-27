@@ -64,9 +64,9 @@
 										include '../../controllers/ecriController.php';
 
 										$totalActivos=totalActivos();
-										$paginas=ceil($totalActivos/10);
 										$actual=$_REQUEST['pagina'];
-										$cantPagina=10;
+										$cantPagina=50;
+										$paginas=ceil($totalActivos/$cantPagina);
 										$inicial=($actual-1)*$cantPagina;
 
 										if (getEcri($inicial, $cantPagina)) {
