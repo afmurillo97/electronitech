@@ -43,7 +43,7 @@
 		function getClientes() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM clientes WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM clientes WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -59,7 +59,23 @@
 		function getTipoEquipo() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM ecri WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM ecri WHERE fechaEliminacion IS NULL ORDER BY nombre');
+			$resultado=$sql->execute();
+			$resultado=$sql->fetchAll();
+			$num=$sql->rowCount();
+
+			if ($num>=1) {
+				return $resultado;
+			}else{
+				return NULL;
+			}
+			$con=null;
+		}
+
+		function getRegistros() {
+			require 'conexion.php';
+
+			$sql=$con->prepare('SELECT * FROM registros WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -75,7 +91,7 @@
 		function getEquipos() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT equipos.id, marcas.nombre AS marca, modelos.nombre AS modelo FROM equipos INNER JOIN marcas ON marcas.id=equipos.idMarca INNER JOIN modelos ON modelos.id=equipos.idModelo WHERE equipos.fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT equipos.id, marcas.nombre AS marca, modelos.nombre AS modelo FROM equipos INNER JOIN marcas ON marcas.id=equipos.idMarca INNER JOIN modelos ON modelos.id=equipos.idModelo WHERE equipos.fechaEliminacion IS NULL ORDER BY marcas.nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
