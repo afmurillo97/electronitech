@@ -36,7 +36,7 @@ function nuevoPermiso() {
 }
 
 function buscar(){
-	if ($('#entrada').val().length>0) {
+	if ($('#entrada').val().length>0 || $('#entrada').val() == '') {
 		$.ajax({
 			url: '../../controllers/permisosController.php',
 			type:'POST',
@@ -47,10 +47,10 @@ function buscar(){
 				$('.formEditarPermiso').click(formEditarPermiso);
 				$('.formEliminarPermiso').click(formEliminarPermiso);
 			}
-		});
-	}else{
-		$('#resultado').html('');
+		 });
 	}
+	// 	$('#resultado').html('');
+	// }
 }
 
 function formEditarPermiso() {

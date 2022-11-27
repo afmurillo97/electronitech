@@ -44,7 +44,8 @@ $(document).on('ready', iniciar);
 	}
 
 function buscar(){
-	if ($('#entrada').val().length>0) {
+    var entrada = $('#entrada').val();
+	if (entrada.length>0) {
 		$.ajax({
 			url: '../../controllers/usuariosController.php',
 			type:'POST',
@@ -57,8 +58,6 @@ function buscar(){
 				$('.formEditarPermisos').click(formEditarPermisos);
 			}
 		});
-	}else{
-		$('#resultado').html('');
 	}
 }
 
