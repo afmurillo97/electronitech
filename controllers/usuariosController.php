@@ -113,27 +113,30 @@
 					}
 					break;
 				case 'buscador':
-					$sql=$con->prepare('SELECT * FROM usuarios WHERE username LIKE "%":P1"%"');
-					$resultado=$sql->execute(array('P1'=>$_POST['termino']));
+					$sql=$con->prepare('SELECT * FROM usuarios WHERE (nombres LIKE "%":P1"%") OR (apellidos LIKE "%":P1"%") OR (identificacion LIKE "%":P1"%") OR (username LIKE "%":P1"%")');
+					$resultado= $sql->execute(array('P1'=>$_POST['termino']));
 					$resultado=$sql->fetchAll();
 					$num=$sql->rowCount();
-
+					// var_dump($resultado);
 					if ($num>=1) {
 						$editar=permisosItem($_SESSION['idUsuario'], 'editar usuarios');
 						$anular=permisosItem($_SESSION['idUsuario'], 'anular usuarios');
 
 						echo '
-							<table class="table table-hover table-responsive">
-								<tr>
-									<th>Nombres</th>
-									<th>Identificación</th>
-									<th>Celular</th>
-									<th>Username</th>
-									<th>E-mail</th>
-									<th>Cargo</th>
-									<th>Firma</th>
-									<th>Acción</th>
-								</tr>
+							
+						<table class="table table-hover sort">
+						<thead>
+							<tr>
+								<th>Nombressss</th>
+								<th>Identificación</th>
+								<th>Celular</th>
+								<th>Username</th>
+								<th>E-mail</th>
+								<th>Cargo</th>
+								<th class="no-sort">Firma</th>
+								<th class="no-sort">Acción</th>
+							</tr>
+						</thead>
 						';
 						foreach ($resultado as $fila) {
 							$firma = !empty($fila['firmaDigital']) ? '<a target="_blank" href="http://'.$fila['firmaDigital'].'"><span class="mdi mdi-file-pdf"></span></a>' : '';
@@ -164,9 +167,11 @@
 								</tr>
 							';
 						}
-						echo '</table>';
+						echo '</table>
+								<label><a href="http://127.0.0.1/electronitech/views/usuarios/usuarios.php?pagina=1">VER TODOS</a></label>';
 					}else{
-						echo FALSE;
+						echo '<label><a href="http://127.0.0.1/electronitech/views/usuarios/usuarios.php?pagina=1">NO HAY RESULTADOS</a></label>';
+						
 					}
 					break;	
 				case 'editar':
