@@ -94,7 +94,9 @@
 													</thead>
 											';
 
-											foreach (getArticulos($inicial, $cantPagina) as $fila) {												
+											foreach (getArticulos($inicial, $cantPagina) as $fila) {
+												$reporte = !validacionReporte($fila['id']) ? 'style="pointer-events: none"':'';
+											
 												echo '
 													<tr>
 														<input type="hidden" class="idArticulo" value="'.$fila['id'].'">
@@ -113,7 +115,7 @@
 															</button>
 														</td>
 														<td title="Descargar Reporte">
-															<a href="../../views/equipos/articulosUtils/exportarReporte.php?id='.$fila['id'].'" class="btn btn-dark btn-sm " target="_blank">
+															<a href="../../views/equipos/articulosUtils/exportarReporte.php?id='.$fila['id'].'" class="btn btn-dark btn-sm " target="_blank" '.$reporte.'>
 																<span class="mdi mdi-file-pdf outline"></span>
 															</a>
 														</td>
