@@ -76,7 +76,7 @@
 			$idEquipo=$fila['idEquipo'];
 			$marca=$fila['marca'];
 			$modelo=$fila['modelo'];
-			$serie=$fila['serie'];
+			$serie= (!empty($fila['serie'])) ? $fila['serie'] : 'NR';
 			$servicio=$fila['servicio'];
 			$tipoEquipo=$fila['tipoEquipo'];
 			$codigoEcri=$fila['codigoEcri'];
@@ -87,17 +87,15 @@
 			$riesgo=$fila['riesgo'];
 			$descripcionBiomedica=$fila['descripcionBiomedica'];
 			$direccion = explode('@', $fila['direccion']);
-			// $logocliente1 = !empty(getLogoCliente($con, $fila['idCliente'])) ? getLogoCliente($con, $fila['idCliente']) : '127.0.0.1/electronitech/assets/images/logosClientes/electronitech.jpg';
-			// $urlLogoCliente = explode('electronitech/', $logocliente);
 			$logo = (!empty($fila['logo'])) ? $fila['logo'] : '127.0.0.1/electronitech/assets/images/logosClientes/electronitech.jpg';
 			$logoCliente = explode('electronitech/', $logo);
 			$fechaCreacion = $fila['fechaCreacion'];
-
+			//<img src="../../../'.$logoCliente[1].'" alt="" width="220" height="120">
 			$cuerpo = '
 				<!-- ENCABEZADO 1 PAG -->
 				<table border="1" style="width: 100%;">
 					<tr>	
-						<td rowspan="3" style="width: 30%;"> <img src="../../../'.$logoCliente[1].'" alt="" width="220" height="120"> </td>
+						<td rowspan="3" style="width: 30%;"> '.$logoCliente[1].' </td>
 						<td rowspan="2" style="width: 45%;"><h4 style="text-align: center;">'.$cliente.'</h4></td>
 						<td style="width: 25%;"><strong>CÓDIGO:</strong> '.$codDoc.'</td>
 					</tr>
@@ -108,8 +106,9 @@
 						<td><h4 style="text-align: center;">HOJA DE VIDA DE EQUIPO MEDICO</h4></td>
 						<td><strong>FECHA:</strong>'.$fechaCreacion.'</td>
 					</tr>
-				</table><br>
-
+				</table><br>';
+				
+			$cuerpo .='
 				<!-- SECCION PRESTADOR DE SERVICIOS DE SALUD 1 PAG -->
 				<table cellspacing="10" style="width: 100%; border: 4px double black;">
 					<tr>
@@ -175,6 +174,19 @@
 						break;
 				}
 
+				$rs = $pc = $nr = '____';
+				switch ($tipoRegistro) {
+					case 'REGISTRO SANITARIO':
+						$rs = '&nbsp;&nbsp;X&nbsp;&nbsp;';
+						break;
+					case 'PERMISO COMERCIALIZACION':
+						$pc = '&nbsp;&nbsp;X&nbsp;&nbsp;';
+						break;
+					default:
+						$nr = '&nbsp;&nbsp;X&nbsp;&nbsp;';
+						break;
+				}
+
 			$cuerpo .= '
 				<!-- SECCION EQUIPO BIOMEDICO 1 PAG -->
 				<table cellspacing="10" style="width: 100%; border: 4px double black;">
@@ -206,44 +218,17 @@
 						<th width="25%"> No. INVENTARIO:</th>
 						<td width="35%">'.$inventario.'</td>
 					</tr>
-				';
-
-				switch ($tipoRegistro) {
-					case 'REGISTRO SANITARIO':
-				$cuerpo .= '
 					<tr>
 						<th width="25%"> REGISTRO INVIMA:</th>
-						<td width="35%">RS:&nbsp;&nbsp;X&nbsp;&nbsp;PC:____NR:____</td>
+						<td width="35%">RS:'.$rs.'PC:'.$pc.'NR:'.$nr.'</td>
 					</tr>
-				';
-						break;
-					case 'PERMISO COMERCIALIZACION':
-				$cuerpo .= '
-					<tr>
-						<th width="25%"> REGISTRO INVIMA:</th>
-						<td width="35%">RS:____PC:&nbsp;&nbsp;X&nbsp;&nbsp;NR:____</td>
-					</tr>
-				';
-						break;
-					
-					default:
-				$cuerpo .= '
-					<tr>
-						<th width="25%"> REGISTRO INVIMA:</th>
-						<td width="35%">RS:____PC:____NR:&nbsp;&nbsp;X&nbsp;&nbsp;</td>
-					</tr>
-				';
-						break;
-				}
-
-				$cuerpo .= '
 					<tr>
 						<th width="25%"> No. REGISTRO:</th>
 						<td width="35%">'.$registro.'</td>
 					</tr>
 					<tr>
 						<th width="25%"> CONDICION:</th>
-						<td width="35%">________________________________</td>
+						<td width="35%">_________________________________</td>
 					</tr>
 			
 					<tr>
@@ -260,9 +245,6 @@
 					</tr>
 				</table><br>
 				<span style="position: absolute; bottom: 8px;">NR*: No Registra. NA*: No Aplica.</span>
-
-				
-
 			';
 
 			}
@@ -301,7 +283,7 @@
 						$formaAdquisicion=json_decode($fila['valores'])->val1;
 						break;
 					case 'costoSinIVA':
-						$costoSinIVA=json_decode($fila['valores'])->val1;
+						$costoSinIVA=(json_decode($fila['valores'])->val1 === 'NaN') ? 0 : json_decode($fila['valores'])->val1;
 						break;
 					case 'documentoAdquisicion':
 						$documentoAdquisicion=json_decode($fila['valores'])->val1;
@@ -334,8 +316,8 @@
 					<td style="width: 36%;">'.$fechaVencimiento.'</td>
 				</tr>
 				<tr>
-					<th colspan="2" style="width: auto;">PROVEEDOR:</th>
-					<td colspan="2" style="width: auto;">'.$proveedor['nombre'].'</td>
+					<th  style="width: auto;">PROVEEDOR:</th>
+					<td colspan="3" style="width: auto;">'.$proveedor['nombre'].'</td>
 				</tr>
 				<tr>
 					<th style="width: 17%;">REPRESENTANTE:</th>
@@ -376,166 +358,167 @@
 		$num3=$query3->num_rows;
 
 		if ($num3>=1) {
-			$cuerpo .= '
-					<div style="width: 100%; display: inline-block;">
-						<!-- ENCABEZADO 2 PAG -->
-						<table border="1" style="width: 100%;">
-							<tr>	
-								<td rowspan="3" style="width: 30%;"> <img src="../../../'.$logoCliente[1].'" alt="" width="220" height="120"> </td>
-								<td rowspan="2" style="width: 45%;"><h4 style="text-align: center;">'.$cliente.'</h4></td>
-								<td style="width: 25%;"><strong>CÓDIGO:</strong> '.$codDoc.'</td>
-							</tr>
-							<tr>
-								<td><strong>VERSIÓN:</strong> 1.0.0</td>
-							</tr>
-							<tr>
-								<td><h4 style="text-align: center;">HOJA DE VIDA DE EQUIPO MEDICO</h4></td>
-								<td><strong>FECHA:</strong>'.$fechaCreacion.'</td>
-							</tr>
-						</table><br>
-
-						<!-- REGISTRO TECNICO DE INSTALACION 2 PAG -->
-						<table cellspacing="10" style="width: 100%; border: 4px double black;">
-							<tr>
-								<th colspan="2" style="text-align: center; font-size: 16px;">REGISTRO TECNICO DE INSTALACION</th>
-							</tr>
-			';
 			foreach ($resultado3 as $fila) {
 				switch ($fila['nombre']) {
 					case 'fuenteAlimentacion':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> FUENTE DE ALIMENTACIÓN:</th>
-								<td style="width: 60%;">'.json_decode($fila['valores'])->val1.'</td>
-							</tr>
-						';
+						$fuenteAlimentacion = json_decode($fila['valores'])->val1;
 						break;
 					case 'tecnologiaDominante':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> TECNOLOGIA PREDOMINANTE:</th>
-								<td style="width: 60%;">'.json_decode($fila['valores'])->val1.'</td>
-							</tr>
-						';
+						$tecnologiaDominante = json_decode($fila['valores'])->val1;
 						break;
 					case 'voltajeDeAlimentacion':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> VOLTAJE DE ALIMENTACIÓN ['.json_decode($fila['valores'])->unidad.']:</th>
-								<td style="width: 60%;">MAX: '.json_decode($fila['valores'])->max.' MIN: '.json_decode($fila['valores'])->min.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$voltajeDeAlimentacionUnidad = json_decode($fila['valores'])->unidad;
+						$voltajeDeAlimentacionMax = json_decode($fila['valores'])->max;
+						$voltajeDeAlimentacionMin = json_decode($fila['valores'])->min;
 						break;
 					case 'consumoDeCorriente':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> CONSUMO DE CORRIENTE ['.json_decode($fila['valores'])->unidad.']:</th>								
-								<td style="width: 60%;">MAX: '.json_decode($fila['valores'])->max.' MIN: '.json_decode($fila['valores'])->min.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$consumoDeCorrienteUnidad = json_decode($fila['valores'])->unidad;
+						$consumoDeCorrienteMax = json_decode($fila['valores'])->max;
+						$consumoDeCorrienteMin = json_decode($fila['valores'])->min;
 						break;
 					case 'temperaturaOperativa':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> TEMPERATURA OPERATIVA['.json_decode($fila['valores'])->unidad.']:</th>								
-								<td style="width: 60%;">MAX: '.json_decode($fila['valores'])->max.' MIN: '.json_decode($fila['valores'])->min.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$temperaturaOperativaUnidad = json_decode($fila['valores'])->unidad;
+						$temperaturaOperativaMax = json_decode($fila['valores'])->max;
+						$temperaturaOperativaMin = json_decode($fila['valores'])->min;
 						break;
 					case 'potenciaDisipada':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> POTENCIA DISCIPADA ['.json_decode($fila['valores'])->unidad.']:</th>								
-								<td style="width: 60%;">'.json_decode($fila['valores'])->val1.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$potenciaDisipada = json_decode($fila['valores'])->val1;
+						$potenciaDisipadaUnidad = json_decode($fila['valores'])->unidad;
 						break;
 					case 'frecuenciaElectrica':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> FRECUENCIA DE TRABAJO ['.json_decode($fila['valores'])->unidad.']:</th>								
-								<td style="width: 60%;">'.json_decode($fila['valores'])->val1.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$frecuenciaDeTrabajo = json_decode($fila['valores'])->val1;
+						$frecuenciaDeTrabajoUnidad = json_decode($fila['valores'])->unidad;
 						break;
 					case 'velocidadFlujo':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> VELOCIDAD ['.json_decode($fila['valores'])->unidad.']:</th>								
-								<td style="width: 60%;">'.json_decode($fila['valores'])->val1.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$velocidadFlujo = json_decode($fila['valores'])->val1;
+						$velocidadFlujoUnidad = json_decode($fila['valores'])->unidad;
 						break;
 				}
 			}
+			//<img src="../../../'.$logoCliente[1].'" alt="imagen de '.$cliente.'" width="220" height="120">
 			$cuerpo .= '
-						</table><br>
-					</div>
-					
-					<div style="width: 100%; display: inline-block;">
-
-						<!-- REGISTRO TECNICO DE FUNCIONAMIENTO 2 PAG -->
-						<table cellspacing="10" style="width: 100%; border: 4px double black;">
-
-							<tr>
-								<th colspan="2" style="text-align: center; font-size: 16px;">REGISTRO TECNICO DE FUNCIONAMIENTO</th>
-							</tr>
+				<!-- ENCABEZADO 2 PAG -->
+				<table border="1" style="width: 100%;">
+					<tr>	
+						<td rowspan="3" style="width: 30%;"> '.$logoCliente[1].' </td>
+						<td rowspan="2" style="width: 45%;"><h4 style="text-align: center;">'.$cliente.'</h4></td>
+						<td style="width: 25%;"><strong>CÓDIGO:</strong> '.$codDoc.'</td>
+					</tr>
+					<tr>
+						<td><strong>VERSIÓN:</strong> 1.0.0</td>
+					</tr>
+					<tr>
+						<td><h4 style="text-align: center;">HOJA DE VIDA DE EQUIPO MEDICO</h4></td>
+						<td><strong>FECHA:</strong>'.$fechaCreacion.'</td>
+					</tr>
+				</table><br>
+				';
+			$cuerpo .= '
+				<!-- REGISTRO TECNICO DE INSTALACION 2 PAG -->
+				<table cellspacing="10" style="width: 100%; border: 4px double black;">
+					<tr>
+						<th colspan="2" style="text-align: center; font-size: 16px;">REGISTRO TECNICO DE INSTALACION</th>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> FUENTE DE ALIMENTACIÓN:</th>
+						<td style="width: 60%;">'.$fuenteAlimentacion.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> TECNOLOGIA PREDOMINANTE:</th>
+						<td style="width: 60%;">'.$tecnologiaDominante.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> VOLTAJE DE ALIMENTACIÓN ['.$voltajeDeAlimentacionUnidad.']:</th>
+						<td style="width: 60%;">MAX: '.$voltajeDeAlimentacionMax.' MIN: '.$voltajeDeAlimentacionMin.' '.$voltajeDeAlimentacionUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> CONSUMO DE CORRIENTE ['.$consumoDeCorrienteUnidad.']:</th>								
+						<td style="width: 60%;">MAX: '.$consumoDeCorrienteMax.' MIN: '.$consumoDeCorrienteMin.' '.$consumoDeCorrienteUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> TEMPERATURA OPERATIVA['.$temperaturaOperativaUnidad.']:</th>								
+						<td style="width: 60%;">MAX: '.$temperaturaOperativaMax.' MIN: '.$temperaturaOperativaMin.' '.$temperaturaOperativaUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> POTENCIA DISCIPADA ['.$potenciaDisipadaUnidad.']:</th>								
+						<td style="width: 60%;">'.$potenciaDisipada.' '.$potenciaDisipadaUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> FRECUENCIA DE TRABAJO ['.$frecuenciaDeTrabajo.']:</th>								
+						<td style="width: 60%;">'.$frecuenciaDeTrabajo.' '.$frecuenciaDeTrabajoUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> VELOCIDAD ['.$velocidadFlujoUnidad.']:</th>								
+						<td style="width: 60%;">'.$velocidadFlujo.' '.$velocidadFlujoUnidad.'</td>
+					</tr>
+				</table><br>
 			';
+
 			foreach ($resultado3 as $fila) {
 				switch ($fila['nombre']) {
 					case 'controlPresion':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> PRESION:</th>
-								<td style="width: 60%;">'.json_decode($fila['valores'])->max.' - '.json_decode($fila['valores'])->min.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$controlPresionUnidad = json_decode($fila['valores'])->unidad;
+						$controlPresionMax = json_decode($fila['valores'])->max;
+						$controlPresionMin = json_decode($fila['valores'])->min;
 						break;
 					case 'controlTemperatura':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> TEMPERATURA:</th>
-								<td style="width: 60%;">MAX: '.json_decode($fila['valores'])->max.' MIN: '.json_decode($fila['valores'])->min.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$controlTemperaturaUnidad = json_decode($fila['valores'])->unidad;
+						$controlTemperaturaMax = json_decode($fila['valores'])->max;
+						$controlTemperaturaMin = json_decode($fila['valores'])->min;
 						break;
 					case 'controlEnergia':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> ENERGIA:</th>
-								<td style="width: 60%;">MAX: '.json_decode($fila['valores'])->max.' MIN: '.json_decode($fila['valores'])->min.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$controlEnergiaUnidad = json_decode($fila['valores'])->unidad;
+						$controlEnergiaMax = json_decode($fila['valores'])->max;
+						$controlEnergiaMin = json_decode($fila['valores'])->min;
 						break;
 					case 'pesoSoportado':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> PESO:</th>
-								<td style="width: 60%;">MAX: '.json_decode($fila['valores'])->max.' MIN: '.json_decode($fila['valores'])->min.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$pesoSoportadoUnidad = json_decode($fila['valores'])->unidad;
+						$pesoSoportadoMax = json_decode($fila['valores'])->max;
+						$pesoSoportadoMin = json_decode($fila['valores'])->min;
 						break;
 					case 'controlVelocidad':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> VELOCIDAD:</th>								
-								<td style="width: 60%;">MAX: '.json_decode($fila['valores'])->max.' MIN: '.json_decode($fila['valores'])->min.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$controlVelocidadUnidad = json_decode($fila['valores'])->unidad;
+						$controlVelocidadMax = json_decode($fila['valores'])->max;
+						$controlVelocidadMin = json_decode($fila['valores'])->min;
 						break;
 					case 'potenciaIrradiada':
-						$cuerpo .='
-							<tr>
-								<th style="width: 40%;"> POTENCIA RADIADA:</th>
-								<td style="width: 60%;">MAX: '.json_decode($fila['valores'])->max.' MIN: '.json_decode($fila['valores'])->min.' '.json_decode($fila['valores'])->unidad.'</td>
-							</tr>
-						';
+						$potenciaIrradiadaUnidad = json_decode($fila['valores'])->unidad;
+						$potenciaIrradiadaMax = json_decode($fila['valores'])->max;
+						$potenciaIrradiadaMin = json_decode($fila['valores'])->min;
 						break;
 				}
 			}
 			$cuerpo .= '
-						</table><br>
-					</div>
+				<!-- REGISTRO TECNICO DE FUNCIONAMIENTO 2 PAG -->
+				<table cellspacing="10" style="width: 100%; border: 4px double black;">
+					<tr>
+						<th colspan="2" style="text-align: center; font-size: 16px;">REGISTRO TECNICO DE FUNCIONAMIENTO</th>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> PRESION:</th>
+						<td style="width: 60%;">'.$controlPresionMax.' - '.$controlPresionMin.' '.$controlPresionUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> TEMPERATURA:</th>
+						<td style="width: 60%;">MAX: '.$controlTemperaturaMax.' MIN: '.$controlTemperaturaMin.' '.$controlTemperaturaUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> ENERGIA:</th>
+						<td style="width: 60%;">MAX: '.$controlEnergiaMax.' MIN: '.$controlEnergiaMin.' '.$controlEnergiaUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> PESO:</th>
+						<td style="width: 60%;">MAX: '.$pesoSoportadoMax.' MIN: '.$pesoSoportadoMin.' '.$pesoSoportadoUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> VELOCIDAD:</th>								
+						<td style="width: 60%;">MAX: '.$controlVelocidadMax.' MIN: '.$controlVelocidadMin.' '.$controlVelocidadUnidad.'</td>
+					</tr>
+					<tr>
+						<th style="width: 40%;"> POTENCIA RADIADA:</th>
+						<td style="width: 60%;">MAX: '.$potenciaIrradiadaMax.' MIN: '.$potenciaIrradiadaMin.' '.$potenciaIrradiadaUnidad.'</td>
+					</tr>
+				</table><br>
 			';
 		}
 
@@ -545,318 +528,182 @@
 		$num4=$query4->num_rows;
 
 		if ($num4>=1) {
-			$cuerpo .= '
-					
-					<div style="width: 100%; display: inline-block;">
-
-						<!-- CARACTERISTICAS DE MONITOREO EN EL PACIENTE 2 PAG -->
-						<table cellspacing="10" style="width: 100%; border: 4px double black;">
-							<tr>
-								<th colspan="8" style="text-align: center; font-size: 16px;">CARACTERISTICAS DE MONITOREO EN EL PACIENTE</th>
-							</tr>
-			';
-			$cuerpo .= '<tr>';
 			foreach ($resultado4 as $fila) {
 				switch ($fila['nombre']) {
 					case 'dioxidoCarbono':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">CO<sub>2</sub>:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">CO<sub>2</sub>:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$dioxidoCarbono = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'frecuenciaCardiaca':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">FC:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">FC:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$frecuenciaCardiaca = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'temperatura':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">TEMP:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">TEMP:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$temperatura = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'gasesAnestesicos':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">GA:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">GA:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$gasesAnestesicos = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 				}				
 			}	
- 			$cuerpo .= '
-						</tr>
-						<tr>
-			';
+
 			foreach ($resultado4 as $fila) {
 				switch ($fila['nombre']) {
 					case 'electroCardiografia':						
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">ECF:</th>
-								<td style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">ECF:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$electroCardiografia = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'presionNoInvasiva':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">PNI:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">PNI:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$presionNoInvasiva = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'oximetriaPulso':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">SPO<sub>2</sub>:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">SPO<sub>2</sub>:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$oximetriaPulso = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'gastoCardiaco':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">GC:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">GC:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$gastoCardiaco = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 				}
 			}
-			$cuerpo .= '
-						</tr>
-						<tr>
-			';
 			foreach ($resultado4 as $fila) {
 				switch ($fila['nombre']) {
 					case 'electroMiografia':						
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">EM:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">EM:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$electroMiografia = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'presionInvasiva':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">PI:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						}
+						$presionInvasiva = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'indiceBispectral':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">IB:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">IB:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$indiceBispectral = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'glucosa':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">GLC:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">GLC:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$glucosa = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 				}
 			}
-			$cuerpo .= '
-						</tr>
-						<tr>
-			';
 			foreach ($resultado4 as $fila) {
 				switch ($fila['nombre']) {
 					case 'electroOculografia':						
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">EO:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">EO:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$electroOculografia = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'respiracion':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">RES:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">RES:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$respiracion = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'Electroencefalografia':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">EEG:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">EEG:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$Electroencefalografia = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 					case 'ultrasonido':
-						if ((json_decode($fila['valores'])->val1) === 'checked') {
-							$cuerpo .= '
-								<th style="width: 10%;">US:</th>
-								<td  style="width: 15%;">SI</td>
-							';
-						} else {
-							$cuerpo .= '
-								<th style="width: 10%;">US:</th>
-								<td  style="width: 15%;">NA</td>
-							';
-						}
+						$ultrasonido = ((json_decode($fila['valores'])->val1) === 'checked') ? 'SI' : 'NA';
 						break;
 				}
 			}
-			$cuerpo .= '
-							</tr>
-						</table>
-					</div><br>
+		$cuerpo .= '
+			<div style="width: 100%; display: inline-block;">
+				<!-- CARACTERISTICAS DE MONITOREO EN EL PACIENTE 2 PAG -->
+				<table cellspacing="10" style="width: 100%; border: 4px double black;">
+					<tr>
+						<th colspan="8" style="text-align: center; font-size: 16px;">CARACTERISTICAS DE MONITOREO EN EL PACIENTE</th>
+					</tr>
+					<tr>
+						<th style="width: 10%;">CO<sub>2</sub>:</th>
+						<td  style="width: 15%;">'.$dioxidoCarbono.'</td>
+						<th style="width: 10%;">FC:</th>
+						<td  style="width: 15%;">'.$frecuenciaCardiaca.'</td>
+						<th style="width: 10%;">TEMP:</th>
+						<td  style="width: 15%;">'.$temperatura.'</td>
+						<th style="width: 10%;">GA:</th>
+						<td  style="width: 15%;">'.$gasesAnestesicos.'</td>
+					</tr>
+			
+					<tr>
+						<th style="width: 10%;">ECF:</th>
+						<td style="width: 15%;">'.$electroCardiografia.'</td>
+						<th style="width: 10%;">PNI:</th>
+						<td  style="width: 15%;">'.$presionNoInvasiva.'</td>
+						<th style="width: 10%;">SPO<sub>2</sub>:</th>
+						<td  style="width: 15%;">'.$oximetriaPulso.'</td>
+						<th style="width: 10%;">GC:</th>
+						<td  style="width: 15%;">'.$gastoCardiaco.'</td>
+					</tr>
+
+					<tr>
+						<th style="width: 10%;">EM:</th>
+						<td  style="width: 15%;">'.$electroMiografia.'</td>
+						<th style="width: 10%;">PI:</th>
+						<td  style="width: 15%;">'.$presionInvasiva.'</td>
+						<th style="width: 10%;">IB:</th>
+						<td  style="width: 15%;">'.$indiceBispectral.'</td>
+						<th style="width: 10%;">GLC:</th>
+						<td  style="width: 15%;">'.$glucosa.'</td>
+					</tr>
+					<tr>
+						<th style="width: 10%;">EO:</th>
+						<td  style="width: 15%;">'.$electroOculografia.'</td>
+						<th style="width: 10%;">RES:</th>
+						<td  style="width: 15%;">'.$respiracion.'</td>
+						<th style="width: 10%;">EEG:</th>
+						<td  style="width: 15%;">'.$Electroencefalografia.'</td>
+						<th style="width: 10%;">US:</th>
+						<td  style="width: 15%;">'.$ultrasonido.'</td>
+					</tr>
+				</table>
+			</div><br>
 			';
 		}
 
 		// CONSULTA 3
 		if ($num3>=1) {
-			$cuerpo .= '
-					
-					<div style="width: 100%; display: inline-block;">
-
-						<!-- VARIABLES METROLOGICAS 2 PAG -->
-						<table cellspacing="10" style="width: 100%; border: 4px double black;">
-							<tr>
-								<th colspan="3" style="text-align: center; font-size: 16px;">VARIABLES METROLOGICAS</th>
-							</tr>
-							<tr>
-								<th>VARIABLE</th>
-								<th>EXACTITUD</th>
-								<th>UNIDAD</th>
-							</tr>
-			';
 			foreach ($resultado3 as $fila) {
 				if ($fila['pestana']==='variables') {
 					$unidad = (json_decode($fila['valores'])->val3==='porcentaje') ? '%' : 'N';
-					$cuerpo .= '
-						<tr>
-							<td style="width: 33%;">'.getVariables($con, json_decode($fila['valores'])->val1).'</td>
-							<td style="width: 33%;">(+|-) '.json_decode($fila['valores'])->val2.' '.$unidad.'</td>
-							<td style="width: 34%;">'.$unidad.'</td>
-						</tr>
-					';
+					$variables = getVariables($con, json_decode($fila['valores'])->val1);
+					$variables2 = json_decode($fila['valores'])->val2;
 				} else if ($fila['pestana']==='accesorios') {
 					$descripcion=json_decode($fila['valores'])->val1;
 					$marcaRef=json_decode($fila['valores'])->val2;
-					$cuerpo .= '
-						</table><br>
-						
-						<!-- REGISTROS TECNICOS, MANUALES, COMPONENTES Y/O ACCESORIOS 2 PAG -->
-						<table cellspacing="10" style="width: 100%; border: 4px double black;">
-							<tr>
-								<th colspan="2" style="text-align: center; font-size: 16px;">REGISTROS TECNICOS, MANUALES, COMPONENTES Y/O ACCESORIOS</th>
-							</tr>
-							<tr>
-								<th style="width: 70%;">DESCRIPCION:</th>
-								<th style="width: 30%;">MARCA / REF:</th>
-							</tr>
-							<tr>
-								<td style="width: 70%;">'.$descripcion.'</td>
-								<td style="width: 30%;">'.$marcaRef.'</td>
-							</tr>
-
-
-						</table><br><br><br>
-
-						<span style="">NR*: No Registra. NA*: No Aplica.</span>
-						
-
-					</div>
-			';
 				}
 			}
-			
+		$cuerpo .= '
+			<div style="width: 100%; display: inline-block;">
+
+				<!-- VARIABLES METROLOGICAS 2 PAG -->
+				<table cellspacing="10" style="width: 100%; border: 4px double black;">
+					<tr>
+						<th colspan="3" style="text-align: center; font-size: 16px;">VARIABLES METROLOGICAS</th>
+					</tr>
+					<tr>
+						<th>VARIABLE</th>
+						<th>EXACTITUD</th>
+						<th>UNIDAD</th>
+					</tr>
+					<tr>
+						<td style="width: 33%;">'.$variables.'</td>
+						<td style="width: 33%;">(+|-) '.$variables2.' '.$unidad.'</td>
+						<td style="width: 34%;">'.$unidad.'</td>
+					</tr>
+				</table><br>
+
+				<!-- REGISTROS TECNICOS, MANUALES, COMPONENTES Y/O ACCESORIOS 2 PAG -->
+				<table cellspacing="10" style="width: 100%; border: 4px double black;">
+					<tr>
+						<th colspan="2" style="text-align: center; font-size: 16px;">REGISTROS TECNICOS, MANUALES, COMPONENTES Y/O ACCESORIOS</th>
+					</tr>
+					<tr>
+						<th style="width: 70%;">DESCRIPCION:</th>
+						<th style="width: 30%;">MARCA / REF:</th>
+					</tr>
+					<tr>
+						<td style="width: 70%;">'.$descripcion.'</td>
+						<td style="width: 30%;">'.$marcaRef.'</td>
+					</tr>
+				</table><br><br><br>
+
+				<span style="">NR*: No Registra. NA*: No Aplica.</span>
+
+			</div>
+			';
 		}
 
 		$html2pdf = new Html2Pdf();
 		$html2pdf->writeHTML($cuerpo);
 		// $html2pdf->output('Guia_'.$id.'.pdf', 'D');
-		$html2pdf->output('Guia_'.$id.'.pdf');
+		$html2pdf->output('GUIA_'.$marca.'_'.$modelo.'_'.$serie.'.pdf');
+
 	}
 ?>
