@@ -59,7 +59,7 @@
 		function getTipoEquipo() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM ecri WHERE fechaEliminacion IS NULL ORDER BY nombre');
+			$sql=$con->prepare('SELECT tipoequipo.id AS id, ecri.codigo AS codigo, ecri.nombre AS nombre, descripcionbiomedica.nombre AS descripcion FROM tipoequipo INNER JOIN ecri ON ecri.id=tipoequipo.idEcri INNER JOIN descripcionbiomedica ON descripcionbiomedica.id=tipoequipo.idDescripcionBiomedica WHERE tipoequipo.fechaEliminacion IS NULL ORDER BY ecri.nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -311,6 +311,22 @@
 			$con=null;
 		}
 
+		function validacionReporte($id){
+			require 'conexion.php';
+		
+			$sql=$con->prepare('SELECT * FROM reportes WHERE id = :P1');
+			$resultado=$sql->execute(array('P1'=>$id));
+			$resultado=$sql->fetchAll();
+			$num=$sql->rowCount();
+		
+			if ($num>=1) {
+				return TRUE;
+			}else{
+				return NULL;
+			}
+			$con=null;
+		}
+
 		require 'conexion.php';
 
 		if(isset($_POST['accion'])) {
@@ -364,6 +380,8 @@
 						';
 						foreach ($resultado as $fila) {
 							$checked=($fila['fechaEliminacion']==NULL) ? 'checked' : '';
+							$reporte = !validacionReporte($fila['id']) ? 'style="pointer-events: none"':'';
+
 							echo '
 									<tr>
 										<input type="hidden" class="idArticulo" value="'.$fila['id'].'">
@@ -382,7 +400,7 @@
 											</button>
 										</td>
 										<td title="Descargar Reporte">
-											<a href="../../views/equipos/articulosUtils/exportarReporte.php?id='.$fila['id'].'" class="btn btn-dark btn-sm " target="_blank">
+											<a href="../../views/equipos/articulosUtils/exportarReporte.php?id='.$fila['id'].'" class="btn btn-dark btn-sm " target="_blank" '.$reporte.'>
 												<span class="mdi mdi-file-pdf outline"></span>
 											</a>
 										</td>
@@ -1464,7 +1482,7 @@
 							echo '<option value="'.json_decode($fila['valores'])->val1.'">'.getNameInvima(json_decode($fila['valores'])->val1).'</option>';
 						}
 					}else{
-						echo '<option disabled>NO EXISTEN SERVICIOS PARA ESTE CLIENTE EN ESTA DIRECCIÓN</option>';	
+						echo '<option disabled>NO EXISTEN REGISTROS PARA ESTE CLIENTE EN ESTA DIRECCIÓN</option>';	
 					}
 
 					break;
