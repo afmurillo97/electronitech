@@ -43,7 +43,7 @@
 		function getMarcas() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM marcas WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM marcas WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -59,7 +59,7 @@
 		function getModelos() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM modelos WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM modelos WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -75,7 +75,7 @@
 		function getInvima() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM registros WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM registros WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -91,7 +91,7 @@
 		function getProveedores() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM proveedores WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM proveedores WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -107,7 +107,7 @@
 		function getFabricantes() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM fabricantes WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM fabricantes WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -123,7 +123,7 @@
 		function getVariables() {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM variablesMetrologicas WHERE fechaEliminacion IS NULL');
+			$sql=$con->prepare('SELECT * FROM variablesMetrologicas WHERE fechaEliminacion IS NULL ORDER BY nombre');
 			$resultado=$sql->execute();
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -139,7 +139,7 @@
 		function getNameInvima($nombre) {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM registros WHERE id = :P1');
+			$sql=$con->prepare('SELECT * FROM registros WHERE id = :P1 ORDER BY nombre');
 			$resultado=$sql->execute(array('P1'=>$nombre));
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -157,7 +157,7 @@
 		function proveedoresName($id) {
 			require 'conexion.php';
 		
-			$sql=$con->prepare('SELECT * FROM proveedores WHERE id = :P1');
+			$sql=$con->prepare('SELECT * FROM proveedores WHERE id = :P1 ORDER BY nombre');
 			$resultado=$sql->execute(array('P1'=>$id));
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -175,7 +175,7 @@
 		function fabricantesName($id) {
 			require 'conexion.php';
 		
-			$sql=$con->prepare('SELECT * FROM fabricantes WHERE id = :P1');
+			$sql=$con->prepare('SELECT * FROM fabricantes WHERE id = :P1 ORDER BY nombre');
 			$resultado=$sql->execute(array('P1'=>$id));
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
@@ -193,7 +193,7 @@
 		function variablesName($id) {
 			require 'conexion.php';
 		
-			$sql=$con->prepare('SELECT * FROM variablesMetrologicas WHERE id = :P1');
+			$sql=$con->prepare('SELECT * FROM variablesMetrologicas WHERE id = :P1 ORDER BY nombre');
 			$resultado=$sql->execute(array('P1'=>$id));
 			$resultado=$sql->fetchAll();
 			$num=$sql->rowCount();
