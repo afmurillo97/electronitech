@@ -39,6 +39,22 @@
 			$con=null;
 		}
 
+		function getClientes() {
+			require 'conexion.php';
+
+			$sql=$con->prepare('SELECT * FROM clientes WHERE fechaEliminacion IS NULL ORDER BY nombre');
+			$resultado=$sql->execute();
+			$resultado=$sql->fetchAll();
+			$num=$sql->rowCount();
+
+			if ($num>=1) {
+				return $resultado;
+			}else{
+				return NULL;
+			}
+			$con=null;
+		}
+
 		require 'conexion.php';
 
 		if(isset($_POST['accion'])) {
