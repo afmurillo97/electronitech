@@ -188,11 +188,11 @@
 				<!-- END BODY PAGE -->
 				
 				<!-- MODAL -->
-				<?php include_once 'indexUtils/formModal.php'; ?>
+				<?php include_once 'dashboardUtils/formModal.php'; ?>
 				<!-- MODAL -->
 
 				<!-- MODAL NOTIFY -->
-				<?php include_once 'indexUtils/modalNotify.php'; ?>
+				<?php include_once 'dashboardUtils/modalNotify.php'; ?>
 				<!-- END MODAL NOTIFY -->
 
 				<!-- FOOTER -->
