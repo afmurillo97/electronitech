@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content text-center">
             <h1 style="font-size: 4em;"><i class="mdi mdi-check text-success"></i></h1>
-            <h3>Cliente creado correctamente.</h3>
+            <h3>Mantenimiento creado correctamente.</h3>
         </div>
     </div>
 </div>
@@ -11,7 +11,7 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content text-center">
             <h1 style="font-size: 4em;"><i class="mdi mdi-check text-success"></i></h1>
-            <h3>Cliente actualizado correctamente.</h3>
+            <h3>Mantenimiento actualizado correctamente.</h3>
         </div>
     </div>
 </div>
@@ -31,7 +31,7 @@
             <h1 style="font-size: 4em;">
                 <i class="mdi mdi-comment-question-outline text-warning"></i>
             </h1>
-            <h3>¿Desea eliminar el Cliente?</h3>
+            <h3>¿Desea eliminar el Mantenimiento?</h3>
             <div class="modal-body">
                 <button type="button" class="btn btn-primary mr-2" id="eliminarCliente" data-dismiss="modal">Eliminar</button>
 			    <button class="btn btn-dark" onClick="history.back();">Cancelar</button>
