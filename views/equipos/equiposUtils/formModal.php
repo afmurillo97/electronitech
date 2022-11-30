@@ -433,7 +433,7 @@
 											<option value="NaN">Seleccione</option>
 											<?php
 												foreach (getInvima() as $fila) {
-													echo '<option value="'.$fila['id'].'">'.$fila['nombre'].'</option>';
+													echo '<option value="'.$fila['id'].'">'.$fila['tipoRegistro'].' - '.$fila['nombre'].'</option>';
 												}
 											?>
 										</select>
@@ -457,7 +457,7 @@
 											<option value="NaN">Seleccione</option>
 											<?php
 												foreach (getProveedores() as $fila) {
-													echo '<option value="'.$fila['id'].'">'.$fila['nombre'].'</option>';
+													echo '<option value="'.$fila['id'].'">'.$fila['nombre'].'  ['.$fila['nit'].'] - ['.$fila['ciudad'].']</option>';
 												}
 											?>
 										</select>
@@ -481,7 +481,7 @@
 											<option value="NaN">Seleccione</option>
 											<?php
 												foreach (getFabricantes() as $fila) {
-													echo '<option value="'.$fila['id'].'">'.$fila['nombre'].'</option>';
+													echo '<option value="'.$fila['id'].'">'.$fila['nombre'].' - ['.$fila['ciudad'].']</option>';
 												}
 											?>
 										</select>
@@ -510,7 +510,7 @@
 											<option value="NaN">Seleccione</option>
 											<?php
 												foreach (getVariables() as $fila) {
-													echo '<option value="'.$fila['id'].'">'.$fila['nombre'].'</option>';
+													echo '<option value="'.$fila['id'].'">'.$fila['nombre'].' - ['.$fila['unidadSigno'].']</option>';
 												}
 											?>
 										</select>
