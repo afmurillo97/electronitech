@@ -435,9 +435,9 @@
 													<div class="col-sm-9">
 														<select class="form-control form-control-sm" id="idRegistro">
 															<option value="'.$fila['registro'].'">'.$fila['registro'].'</option>
-															<option value="RS">REGISTRO SANITARIO</option>
-															<option value="PC">PERMISO DE COMERCIALIZACIÓN</option>
-															<option value="NR">NO REGISTRA</option>
+															<option value="REGISTRO SANITARIO">REGISTRO SANITARIO</option>
+															<option value="PERMISO DE COMERCIALIZACION">PERMISO DE COMERCIALIZACIÓN</option>
+															<option value="NO REGISTRA">NO REGISTRA</option>
 														</select>
 													</div>
 												</div>
