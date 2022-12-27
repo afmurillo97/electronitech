@@ -10,7 +10,7 @@
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Iniciar sesion | Corona</title>
+	<title>Iniciar sesion | Electronitech</title>
 	<!-- Layout styles -->
 	<link rel="stylesheet" href="assets/css/style.css">
 	<!-- Favicon -->
