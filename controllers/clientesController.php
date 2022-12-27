@@ -469,7 +469,9 @@
 							$direccion = json_decode($fila['direccion']);
 
 							for ($i=0; $i<$cantidad; $i++) {
-								echo '<option value="'.$direccion[$i].'">'.$direccion[$i].'</option>';
+								$direccionGuion=str_replace("@", " - ", $direccion[$i]);
+
+								echo '<option value="'.$direccion[$i].'">'.$direccionGuion.'</option>';
 							}							
 						}
 					}
