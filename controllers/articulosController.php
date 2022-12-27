@@ -25,7 +25,7 @@
 		function getArticulos($inicio, $fin) {
 			require 'conexion.php';
 
-			$sql=$con->prepare('SELECT * FROM articulosView WHERE fechaEliminacion IS NULL LIMIT :P1,:P2');
+			$sql=$con->prepare('SELECT * FROM articulosView WHERE fechaEliminacion IS NULL ORDER BY id DESC LIMIT :P1,:P2');
 			$sql->bindParam(':P1', $inicio, PDO::PARAM_INT);
 			$sql->bindParam(':P2', $fin, PDO::PARAM_INT);
 			$resultado=$sql->execute();
@@ -359,11 +359,7 @@
 						$anular=permisosItem($_SESSION['idUsuario'], 'anular equipos');
 
 						echo '
-							<table class="table table-hover sort">
-								<thead>
-									<tr>
-										<th colspan="10"><label style="font-size: 20px;">'.$totalActivos.' Articulos encontrados </label></th>
-									</tr>
+							<table class="table table-hover">
 									<tr>
 										<th>Tipo Equipo</th>
 										<th>Marca</th>
@@ -376,7 +372,6 @@
 										<th class="no-sort">Estado</th>
 										<th class="no-sort">Acción</th>
 									</tr>
-								</thead>
 						';
 						foreach ($resultado as $fila) {
 							$checked=($fila['fechaEliminacion']==NULL) ? 'checked' : '';
@@ -508,7 +503,9 @@
 													$direccion = getDireccionesCliente($fila['idCliente'])[1];
 
 													for ($i=0; $i<$cantidad; $i++) {
-														echo '<option value="'.$direccion[$i].'">'.$direccion[$i].'</option>';
+														$direccionGuion=str_replace("@", " - ", $direccion[$i]);
+
+														echo '<option value="'.$direccion[$i].'">'.$direccionGuion.'</option>';
 													}
 											echo '</select>
 											</div>
@@ -1449,7 +1446,9 @@
 							$direccion = json_decode($fila['direccion']);
 
 							for ($i=0; $i<$cantidad; $i++) {
-								echo '<option value="'.$direccion[$i].'">'.$direccion[$i].'</option>';
+								$direccionGuion=str_replace("@", " - ", $direccion[$i]);
+
+								echo '<option value="'.$direccion[$i].'">'.$direccionGuion.'</option>';
 							}
 						}
 					}else{
