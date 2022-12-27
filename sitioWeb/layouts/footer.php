@@ -21,8 +21,8 @@
           <li><i class="bx bx-chevron-right"></i> <a href="#hero">Inicio</a></li>
           <li><i class="bx bx-chevron-right"></i> <a href="#about">Acerca de Nosotros</a></li>
           <li><i class="bx bx-chevron-right"></i> <a href="#services">Servicios</a></li>
-          <li><i class="bx bx-chevron-right"></i> <a href="../sitioWeb/documents/condiciones.pdf">Terminos de Servicio</a></li>
-          <li><i class="bx bx-chevron-right"></i> <a href="../sitioWeb/documents/tratamiento.pdf">Politica de Privacidad</a></li>
+          <li><i class="bx bx-chevron-right"></i> <a href="../sitioWeb/documents/condiciones.pdf" target="blank_">Terminos de Servicio</a></li>
+          <li><i class="bx bx-chevron-right"></i> <a href="../sitioWeb/documents/tratamiento.pdf" target="blank_">Politica de Privacidad</a></li>
         </ul>
       </div>
 
