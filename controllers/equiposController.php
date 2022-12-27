@@ -146,7 +146,7 @@
 
 			if ($num>=1) {
 				foreach ($resultado as $fila) {
-					return $fila['nombre'];
+					return [$fila['nombre'], $fila['tipoRegistro']];
 				}
 			}else{
 				return NULL;
@@ -164,7 +164,7 @@
 		
 			if ($num>=1) {
 				foreach ($resultado as $fila) {
-					return $fila['nombre'];
+					return [$fila['nombre'], $fila['nit'], $fila['ciudad']];
 				}
 			}else{
 				return NULL;
@@ -182,7 +182,7 @@
 		
 			if ($num>=1) {
 				foreach ($resultado as $fila) {
-					return $fila['nombre'];
+					return [$fila['nombre'], $fila['direccion']];
 				}
 			}else{
 				return NULL;
@@ -200,7 +200,7 @@
 		
 			if ($num>=1) {
 				foreach ($resultado as $fila) {
-					return $fila['nombre'];
+					return [$fila['nombre'], $fila['unidadSigno']];
 				}
 			}else{
 				return NULL;
@@ -486,14 +486,14 @@
 														<input type="hidden" id="idItem" value="'.$fila['id'].'">
 														<select class="form-control form-control-sm" id="val1">															
 															<option value="'.json_decode($fila['valores'])->val1.'">'.json_decode($fila['valores'])->val1.'</option>
-															<option value="agua">Agua</option>
-															<option value="gas">Gas</option>
-															<option value="aire">Aire</option>
-															<option value="vapor">Vapor</option>
-															<option value="combustible">Combustible</option>
-															<option value="electricidad">Electricidad</option>
-															<option value="bacterias">Bacterias</option>
-															<option value="energia solar">Energia Solar</option>
+															<option value="AGUA">AGUA</option>
+															<option value="GAS">GAS</option>
+															<option value="AIRE">AIRE</option>
+															<option value="VAPOR">VAPOR</option>
+															<option value="COMBUSTIBLE">COMBUSTIBLE</option>
+															<option value="ELECTRICIDAD">ELECTRICIDAD</option>
+															<option value="BATERIAS">BATERIAS</option>
+															<option value="ENERGIA SOLAR">ENERGIA SOLAR</option>
 														</select>
 													</td>
 													<td></td>
@@ -508,12 +508,12 @@
 														<input type="hidden" id="idItem" value="'.$fila['id'].'">
 														<select class="form-control form-control-sm" id="val1">
 															<option value="'.json_decode($fila['valores'])->val1.'">'.json_decode($fila['valores'])->val1.'</option>
-															<option value="electrica">Electrica</option>
-															<option value="electronica">Electronica</option>
-															<option value="electromecanica">Electromecanica</option>
-															<option value="mecanica">Mecanica</option>
-															<option value="hidraulica">Hidraulica</option>
-															<option value="neumatica">Neumatica</option>
+															<option value="ELECTRICA">ELECTRICA</option>
+															<option value="ELECTRONICA">ELECTRONICA</option>
+															<option value="ELECTROMECANICA">ELECTROMECANICA</option>
+															<option value="MECANICA">MECANICA</option>
+															<option value="HIDRAULICA">HIDRAULICA</option>
+															<option value="NEUMATICA">NEUMATICA</option>
 														</select>
 													</td>
 												</tr>
@@ -939,15 +939,16 @@
 							';
 							$c=1;
 							foreach ($resultado as $fila) {
-								if ($fila['pestana']=='invima') {
+								if ($fila['pestana']=='invima') {				
+									$registroYtipoResistro = (!empty(getNameInvima(json_decode($fila['valores'])->val1))) ? getNameInvima(json_decode($fila['valores'])->val1) : ['', 'NO REGISTRA'];
 									echo '
 										<tr class="nuevoItemInvima nuevoItemInvima_'.$c.'">
 											<input type="hidden" id="idItem" value="'.$fila['id'].'">
 											<td>
 												<select class="form-control form-control-sm" id="val1">
-													<option value="'.json_decode($fila['valores'])->val1.'">'.getNameInvima(json_decode($fila['valores'])->val1).'</option>';
+													<option value="'.json_decode($fila['valores'])->val1.'">'.$registroYtipoResistro[0].'  '.$registroYtipoResistro[1].'</option>';
 													foreach (getInvima() as $data) {
-														echo '<option value="'.$data['id'].'">'.$data['nombre'].'</option>';
+														echo '<option value="'.$data['id'].'">'.$data['nombre'].'  '.$data['tipoRegistro'].'</option>';
 													}
 												echo '</select>
 											</td>
@@ -973,14 +974,16 @@
 							$d=1;
 							foreach ($resultado as $fila) {
 								if ($fila['pestana']=='proveedores') {
+									$proveedorNitCiudad = (!empty(proveedoresName(json_decode($fila['valores'])->val1))) ? proveedoresName(json_decode($fila['valores'])->val1) : ['DESCONOCIDO', '0-0', ''];
+									
 									echo '
 										<tr class="nuevoItemProveedor nuevoItemProveedor_'.$d.'">
 											<input type="hidden" id="idItem" value="'.$fila['id'].'">
 											<td>
 												<select class="form-control form-control-sm" id="val1">
-													<option value="'.json_decode($fila['valores'])->val1.'">'.proveedoresName(json_decode($fila['valores'])->val1).'</option>';
+													<option value="'.json_decode($fila['valores'])->val1.'">'.$proveedorNitCiudad[0].' - [ '.$proveedorNitCiudad[1].' ] [ '.$proveedorNitCiudad[2].' ]</option>';
 													foreach (getProveedores() as $data) {
-														echo '<option value="'.$data['id'].'">'.$data['nombre'].'</option>';
+														echo '<option value="'.$data['id'].'">'.$data['nombre'].' - [ '.$data['nit'].' ] [ '.$data['ciudad'].' ]</option>';
 													}
 												echo '</select>
 											</td>
@@ -1006,14 +1009,15 @@
 							$e=1;
 							foreach ($resultado as $fila) {
 								if ($fila['pestana']=='fabricantes') {
+									$fabricanteYdireccion = (!empty(fabricantesName(json_decode($fila['valores'])->val1))) ? fabricantesName(json_decode($fila['valores'])->val1) : ['DESCONOCIDO', 'SIN DIRECCION'];
 									echo '
 										<tr class="nuevoItemFabricante nuevoItemFabricante_'.$e.'">
 											<input type="hidden" id="idItem" value="'.$fila['id'].'">
 											<td>
 												<select class="form-control form-control-sm" id="val1">
-													<option value="'.json_decode($fila['valores'])->val1.'">'.fabricantesName(json_decode($fila['valores'])->val1).'</option>';
+													<option value="'.json_decode($fila['valores'])->val1.'">'.$fabricanteYdireccion[0].' - [ '.$fabricanteYdireccion[1].' ]</option>';
 													foreach (getFabricantes() as $data) {
-														echo '<option value="'.$data['id'].'">'.$data['nombre'].'</option>';
+														echo '<option value="'.$data['id'].'">'.$data['nombre'].' - [ '.$data['direccion'].' ]</option>';
 													}
 												echo '</select>
 											</td>
@@ -1044,14 +1048,15 @@
 							$f=1;
 							foreach ($resultado as $fila) {
 								if ($fila['pestana']=='variables') {
+									$variableYSigno = (!empty(variablesName(json_decode($fila['valores'])->val1))) ? variablesName(json_decode($fila['valores'])->val1) : ['Seleccione', ''];
 									echo '
 										<tr class="nuevoItemVariable nuevoItemVariable_'.$f.'">
 											<input type="hidden" id="idItem" value="'.$fila['id'].'">
 											<td>
 												<select class="form-control form-control-sm" id="idVariable">
-												<option value="'.json_decode($fila['valores'])->val1.'">'.variablesName(json_decode($fila['valores'])->val1).'</option>';
+												<option value="'.json_decode($fila['valores'])->val1.'">'.$variableYSigno[0].' - [ '.$variableYSigno[1].' ]</option>';
 														foreach (getVariables() as $data) {
-															echo '<option value="'.$data['id'].'">'.$data['nombre'].'</option>';
+															echo '<option value="'.$data['id'].'">'.$data['nombre'].' - [ '.$data['unidadSigno'].' ]</option>';
 														}
 											echo '</select>
 											</td>
@@ -1228,7 +1233,7 @@
 										<option value="NaN">Seleccione</option>
 						';
 						foreach ($resultado as $fila) {
-							echo '<option value="'.$fila['id'].'">'.$fila['nombre'].'</option>';
+							echo '<option value="'.$fila['id'].'">'.$fila['nombre'].' - [ '.$fila['unidadSigno'].' ]</option>';
 						}
 						echo '
 									</select>
@@ -1237,8 +1242,8 @@
 								<td>
 									<select class="form-control form-control-sm" id="unidad">
 										<option value="NaN">Seleccione</option>
-										<option value="porcentaje">Porcentaje</option>
-										<option value="numerico">Numerico</option>
+										<option value="Porcentaje">Porcentaje</option>
+										<option value="Numerico">Numerico</option>
 									</select>
 								</td>
 								<td>
@@ -1247,7 +1252,7 @@
 							</tr>
 						';
 					}else{
-						echo '<option disabled>NO EXISTEN FABRICANTES</option>';
+						echo '<option disabled>NO EXISTEN VARIABLES</option>';
 					}
 					break;
 			}
