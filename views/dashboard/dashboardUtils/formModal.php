@@ -27,15 +27,45 @@
 							</div>
 						</div>
 
+						<div class="col" id="direcciones"><label>Dirección</label></div>
+					</div>
+
+					<div class="row">
 						<div class="col">
 							<div class="form-group">
-								<label class="col-sm-3 col-form-label">Nombre</label>
+								<label class="col-sm-4 col-form-label">Fecha Inicial</label>
+								<div class="col-sm-8">
+									<input type="date" class="form-control" id="fechaInicial">
+								</div>
+							</div>
+						</div>
+
+						<div class="col">
+							<div class="form-group">
+								<label class="col-sm-3 col-form-label">Fecha Final</label>
 								<div class="col-sm-9">
-									<input type="text" class="form-control" id="nombre" placeholder="Nombre">
+									<input type="date" class="form-control" id="fechaFinal">
+								</div>
+							</div>
+						</div>
+
+						<div class="col">
+							<div class="form-group">
+								<label class="col-sm-3 col-form-label">Frecuencia</label>
+								<div class="col-sm-9">
+									<input type="number" class="form-control" id="frecuencia" value="1">
 								</div>
 							</div>
 						</div>
 					</div>
+
+					<div class="row">
+						<div class="col" id="articulos"></div>
+					</div>
+
+					<button type="button" class="btn btn-primary mr-2" id="nuevoCronograma" data-dismiss="modal">Guardar</button>
+					<button class="btn btn-dark" onclick="history.back();">Cancelar</button>
+
 				</form>
 			</div>
 		</div>
