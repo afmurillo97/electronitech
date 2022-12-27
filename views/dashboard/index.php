@@ -1,51 +1,46 @@
 <?php
+	if (!$_REQUEST) {
+		header('Location:index.php?pagina=1');
+	}
+
+	if ($_REQUEST['pagina']<1) {
+		header('Location:index.php?pagina=1');
+	}
+
 	session_start();
 	if (!isset($_SESSION['idUsuario']) || $_SESSION['idUsuario'] == NULL) {
 		print "<script>alert(\"Acceso invalido!\"); window.location='../../index.php';</script>";
-	}	
+	}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Panel Admin</title>
+	<title>Dashboard</title>
 	<!-- HEAD -->
 	<?php include_once '../layouts/head.php'; ?>
+	<!-- END HEAD -->
+	<script src="dashboardUtils/functions.js"></script>
 
+	<!-- CALENDAR -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
-
 	<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500&display=swap" rel="stylesheet">
-
-
 	<link rel="stylesheet" href="../../calendario/fonts/icomoon/style.css">
-
 	<link href='../../calendario/fullcalendar/packages/core/main.css' rel='stylesheet' />
 	<link href='../../calendario/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
-
-
-	<!-- Bootstrap CSS -->
-	<!-- <link rel="stylesheet" href="../../calendario/css/bootstrap.min.css"> -->
-
-	<!-- Style -->
 	<link rel="stylesheet" href="../../calendario/css/style.css">
 
-	<script src="indexUtils/functions.js"></script>
-	<!-- END HEAD -->
-
-</head>
-<body>
-
-	<!-- <script src="../../calendario/js/jquery-3.3.1.min.js"></script> -->
-    <script src="../../calendario/js/popper.min.js"></script>
+	<script src="../../calendario/js/popper.min.js"></script>
     <script src="../../calendario/js/bootstrap.min.js"></script>
-
     <script src='../../calendario/fullcalendar/packages/core/main.js'></script>
     <script src='../../calendario/fullcalendar/packages/interaction/main.js'></script>
     <script src='../../calendario/fullcalendar/packages/daygrid/main.js'></script>
     <script src='../../calendario/fullcalendar/packages/timegrid/main.js'></script>
     <script src='../../calendario/fullcalendar/packages/list/main.js'></script>
-
+	<!-- END CALENDAR -->
+</head>
+<body>
 	<div class="container-scroller">
 		<!-- MENU -->
 		<?php include_once '../layouts/menu.php'; ?>
@@ -61,11 +56,11 @@
 			<div class="main-panel">
 				<div class="content-wrapper">
 					<div class="page-header">
-						<h3 class="page-title">Panel de Mantenimientos</h3>
+						<h3 class="page-title">Dashboard</h3>
 						<nav aria-label="breadcrumb">
 						<?php
 							echo '
-								<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg" '.permisosItem($_SESSION['idUsuario'], 'crear clientes').'>
+								<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg" '.permisosItem($_SESSION['idUsuario'], 'crear cronograma').'>
 									<span class="mdi mdi-plus"></span>
 								</button>
 							';
@@ -75,110 +70,77 @@
 					<div class="row">
 						<div class="col-xl-12 col-sm-12 grid-margin stretch-card">
 							<div class="card">
-								<!--  -->
+								<div class="card-body">
+									<form class="nav-link" id="buscar" action="#" method="POST">
+										<input type="hidden" name="accion" value="buscador">
+										<input type="text" id="entrada" name="termino" class="form-control" placeholder="Ingrese Cliente">
+									</form>
 
-								<ul class="nav nav-tabs" id="myTab" role="tablist">
-									<li class="nav-item" role="presentation">
-										<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Calendario</a>
-									</li>
-									<li class="nav-item" role="presentation">
-										<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Lista</a>
-									</li>
-								</ul>
-								<div class="tab-content" id="myTabContent">
-									<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-										<div id="calendar-container">
-											<div id="calendar"></div>
-										</div>
-										
-										<script>
-											document.addEventListener('DOMContentLoaded', function() {
-												var calendarEl = document.getElementById('calendar');
+									<div id="resultado" class="table-responsive">
+									<?php
+										include '../../controllers/dashboardController.php';
 
-												var calendar = new FullCalendar.Calendar(calendarEl, {
-													plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
-													height: 'parent',
-													header: {
-														left: 'prev, next today',
-														center: 'title',
-														right: 'dayGridMonth, timeGridWeek, timeGridDay, listWeek'
-													},
-													locale: 'es',
-													defaultView: 'dayGridMonth',
-													defaultDate: '2020-02-12',
-													navLinks: true, // can click day/week names to navigate views
-													editable: true,
-													eventLimit: true, // allow "more" link when too many events
-													events: [
-														{
-															id: '1',
-															title: 'All Day Event',
-															start: '2020-02-01',
-														},
-														{
-															title: 'Long Event',
-															start: '2020-02-07',
-															end: '2020-02-10'
-														},
-														{
-															groupId: 999,
-															title: 'Repeating Event',
-															start: '2020-02-09T16:00:00'
-														},
-														{
-															groupId: 999,
-															title: 'Repeating Event',
-															start: '2020-02-16T16:00:00'
-														},
-														{
-															title: 'Conference',
-															start: '2020-02-11',
-															end: '2020-02-13'
-														},
-														{
-															title: 'Meeting',
-															start: '2020-02-12T10:30:00',
-															end: '2020-02-12T12:30:00'
-														},
-														{
-															title: 'Lunch',
-															start: '2020-02-12T12:00:00'
-														},
-														{
-															title: 'Meeting',
-															start: '2020-02-12T14:30:00'
-														},
-														{
-															title: 'Happy Hour',
-															start: '2020-02-12T17:30:00'
-														},
-														{
-															title: 'Dinner',
-															start: '2020-02-12T20:00:00'
-														},
-														{
-															title: 'Birthday Party',
-															start: '2020-02-13T07:00:00'
-														},
-														{
-															title: 'fiesta cumpleaños',
-															start: '2020-02-13T09:00:00'
-														},
-														{
-															title: 'Click for Google',
-															url: 'http://google.com/',
-															start: '2020-02-28'
-														}
-													]
-												});
-												calendar.render();
-											});
-										</script>
-										<script src="../../calendario/js/main.js"></script>
-									</div>
+										$totalActivos=totalActivos();
+										$paginas=ceil($totalActivos/10);
+										$actual=$_REQUEST['pagina'];
+										$cantPagina=10;
+										$inicial=($actual-1)*$cantPagina;
 
-									<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-										lista
+										if (getCronogramas($inicial, $cantPagina)) {
+											$editar=permisosItem($_SESSION['idUsuario'], 'editar cronograma');
+											$anular=permisosItem($_SESSION['idUsuario'], 'anular cronograma');
+
+											echo '
+												<table class="table table-hover sort">
+													<thead>
+														<tr>
+															<th>Cliente</th>
+															<th>Dirección</th>
+															<th>Marca / Modelo</th>
+															<th>Fecha Inicial</th>
+															<th>Fecha Final</th>
+															<th>Acción</th>
+														</tr>
+													</thead>
+											';
+
+											foreach (getCronogramas($inicial, $cantPagina) as $fila) {
+												$direccionGuion=str_replace("@", " - ", $fila['direccion']);
+
+												echo '
+													<tr>
+														<input type="hidden" class="idEquipo" value="'.$fila['id'].'">
+														<td>'.$fila['cliente'].'</td>
+														<td>'.$direccionGuion.'</td>
+														<td>'.$fila['marca'].'/'.$fila['modelo'].'</td>
+														<td>'.$fila['fechaInicial'].'</td>
+														<td>'.$fila['fechaFinal'].'</td>
+														<td>
+															<button type="button" class="btn btn-warning btn-sm formEditarEquipo" data-toggle="modal" data-target=".bd-example-modal-lg" title="Editar Equipo" '.$editar.'>
+																<span class="mdi mdi-pencil"></span>
+															</button>
+														</td>
+													</tr>
+												';
+											}
+											echo '
+												</table>
+												<nav aria-label="Page navigation example">
+													<ul class="pagination pagination-sm">
+											';
+											for ($i=1; $i<=$paginas; $i++) {
+												$active=$actual==$i ? 'active' : '';
+												echo '<li class="page-item '.$active.'"><a class="page-link" href="equipos.php?pagina='.$i.'">'.$i.'</a></li>';
+											}
+											echo '
+													</ul>
+												</nav>
+											';
+											
+										}else{
+											echo '<br>NO EXISTEN MANTENIMIENTOS CREADOS';
+										}
+									?>
 									</div>
 								</div>
 							</div>
@@ -186,7 +148,7 @@
 					</div>
 				</div>
 				<!-- END BODY PAGE -->
-				
+
 				<!-- MODAL -->
 				<?php include_once 'dashboardUtils/formModal.php'; ?>
 				<!-- MODAL -->
