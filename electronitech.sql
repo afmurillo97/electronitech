@@ -1476,7 +1476,7 @@ CREATE TABLE `cronograma` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idCliente` int(11) DEFAULT NULL,
   `direccion` varchar(30) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `idEquipo` int(11) DEFAULT NULL,
+  `idArticulo` int(11) DEFAULT NULL,
   `idUsuario` int(11) DEFAULT NULL,
   `fechaInicial` varchar(20) COLLATE utf8_spanish2_ci DEFAULT NULL,
   `fechaFinal` varchar(20) COLLATE utf8_spanish2_ci DEFAULT NULL,
@@ -1486,9 +1486,21 @@ CREATE TABLE `cronograma` (
   `fechaCreacion` timestamp NOT NULL DEFAULT current_timestamp(),
    PRIMARY KEY (`id`),
    FOREIGN KEY (`idCliente`) REFERENCES `clientes` (`id`),
-   FOREIGN KEY (`idEquipo`) REFERENCES `equipos` (`id`),
+   FOREIGN KEY (`idArticulo`) REFERENCES `articulos` (`id`),
    FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+
+CREATE VIEW `cronogramaView` AS select `cronograma`.`id` AS `id`,`cronograma`.`idCliente` AS `idCliente`,`cronograma`.`direccion` AS `direccion`,`cronograma`.`idArticulo` AS `idArticulo`,`equipos`.`id` AS `idEquipo`,`cronograma`.`idUsuario` AS `idUsuario`,`cronograma`.`fechaInicial` AS `fechaInicial`,`cronograma`.`fechaFinal` AS `fechaFinal`,`cronograma`.`frecuencia` AS `frecuencia`,`cronograma`.`observaciones` AS `observaciones`,`cronograma`.`fechaEliminacion` AS `fechaEliminacion`,`cronograma`.`fechaCreacion` AS `fechaCreacion`,`cronograma`.`estado` AS `estado`,`clientes`.`nombre` AS `cliente`,`marcas`.`nombre` AS `marca`,`modelos`.`nombre` AS `modelo`,`usuarios`.`nombres` AS `usuario`,`usuarios`.`firmaDigital` AS `firma` 
+from `cronograma` 
+inner join `clientes` on `clientes`.`id` = `cronograma`.`idCliente`
+inner join `articulos` on `articulos`.`id` = `cronograma`.`idArticulo`
+inner join `equipos` on `equipos`.`id` = `articulos`.`idEquipo`
+inner join `marcas` on `marcas`.`id` = `equipos`.`idMarca`
+inner join `modelos` on `modelos`.`id` = `equipos`.`idModelo`
+inner join `usuarios` on `usuarios`.`id` = `cronograma`.`idUsuario`
+
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
