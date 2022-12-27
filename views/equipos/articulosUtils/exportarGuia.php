@@ -49,21 +49,6 @@
 		}
 	}
 
-	function getLogoCliente($con, $id){
-		$sql="SELECT * FROM clientes WHERE (id=\"$id\")";
-		$query=$con->query($sql);
-		$resultado=$query->fetch_all(MYSQLI_ASSOC);
-		$num=$query->num_rows;
-
-		if ($num>=1) {
-			foreach ($resultado as $fila) {
-				return ['logo'=>$fila['logo']];
-			}
-		}else{
-			return false;
-		}
-	}
-
 	$id=$_REQUEST['id'];
 
 	$sql="SELECT articulosView.*, descripcionBiomedica.nombre AS descripcionBiomedica, clientes.logo AS logo FROM articulosView INNER JOIN clientes ON clientes.id=articulosView.idCliente INNER JOIN descripcionBiomedica ON descripcionBiomedica.id=articulosView.idDescripcionBiomedica WHERE (articulosView.id=\"$id\")";
@@ -90,12 +75,12 @@
 			$logo = (!empty($fila['logo'])) ? $fila['logo'] : '127.0.0.1/electronitech/assets/images/logosClientes/electronitech.jpg';
 			$logoCliente = explode('electronitech/', $logo);
 			$fechaCreacion = $fila['fechaCreacion'];
-			//<img src="../../../'.$logoCliente[1].'" alt="" width="220" height="120">
+
 			$cuerpo = '
 				<!-- ENCABEZADO 1 PAG -->
-				<table border="1" style="width: 100%;">
+				<table border="1" style="width: 100%;  page-break-before: always;">
 					<tr>	
-						<td rowspan="3" style="width: 30%;"> '.$logoCliente[1].' </td>
+						<td rowspan="3" style="width: 30%;"> <img src="../../../'.$logoCliente[1].'" alt="" width="220" height="120"> </td>
 						<td rowspan="2" style="width: 45%;"><h4 style="text-align: center;">'.$cliente.'</h4></td>
 						<td style="width: 25%;"><strong>CÓDIGO:</strong> '.$codDoc.'</td>
 					</tr>
@@ -395,23 +380,26 @@
 						break;
 				}
 			}
-			//<img src="../../../'.$logoCliente[1].'" alt="imagen de '.$cliente.'" width="220" height="120">
+
 			$cuerpo .= '
 				<!-- ENCABEZADO 2 PAG -->
-				<table border="1" style="width: 100%;">
-					<tr>	
-						<td rowspan="3" style="width: 30%;"> '.$logoCliente[1].' </td>
-						<td rowspan="2" style="width: 45%;"><h4 style="text-align: center;">'.$cliente.'</h4></td>
-						<td style="width: 25%;"><strong>CÓDIGO:</strong> '.$codDoc.'</td>
-					</tr>
-					<tr>
-						<td><strong>VERSIÓN:</strong> 1.0.0</td>
-					</tr>
-					<tr>
-						<td><h4 style="text-align: center;">HOJA DE VIDA DE EQUIPO MEDICO</h4></td>
-						<td><strong>FECHA:</strong>'.$fechaCreacion.'</td>
-					</tr>
-				</table><br>
+				<div style="page-break-before: always;">
+					<table border="1" style="width: 100%;">
+						<tr>	
+							<td rowspan="3" style="width: 30%;"> <img src="../../../'.$logoCliente[1].'" alt="" width="220" height="120"> </td>
+							<td rowspan="2" style="width: 45%;"><h4 style="text-align: center;">'.$cliente.'</h4></td>
+							<td style="width: 25%;"><strong>CÓDIGO:</strong> '.$codDoc.'</td>
+						</tr>
+						<tr>
+							<td><strong>VERSIÓN:</strong> 1.0.0</td>
+						</tr>
+						<tr>
+							<td><h4 style="text-align: center;">HOJA DE VIDA DE EQUIPO MEDICO</h4></td>
+							<td><strong>FECHA:</strong>'.$fechaCreacion.'</td>
+						</tr>
+					</table>
+				</div>
+				<br>
 				';
 			$cuerpo .= '
 				<!-- REGISTRO TECNICO DE INSTALACION 2 PAG -->
@@ -444,7 +432,7 @@
 						<td style="width: 60%;">'.$potenciaDisipada.' '.$potenciaDisipadaUnidad.'</td>
 					</tr>
 					<tr>
-						<th style="width: 40%;"> FRECUENCIA DE TRABAJO ['.$frecuenciaDeTrabajo.']:</th>								
+						<th style="width: 40%;"> FRECUENCIA DE TRABAJO ['.$frecuenciaDeTrabajoUnidad.']:</th>								
 						<td style="width: 60%;">'.$frecuenciaDeTrabajo.' '.$frecuenciaDeTrabajoUnidad.'</td>
 					</tr>
 					<tr>
@@ -653,7 +641,7 @@
 				if ($fila['pestana']==='variables') {
 					$unidad = (json_decode($fila['valores'])->val3==='porcentaje') ? '%' : 'N';
 					$variables = getVariables($con, json_decode($fila['valores'])->val1);
-					$variables2 = json_decode($fila['valores'])->val2;
+					$exactitud = json_decode($fila['valores'])->val2;
 				} else if ($fila['pestana']==='accesorios') {
 					$descripcion=json_decode($fila['valores'])->val1;
 					$marcaRef=json_decode($fila['valores'])->val2;
@@ -674,7 +662,7 @@
 					</tr>
 					<tr>
 						<td style="width: 33%;">'.$variables.'</td>
-						<td style="width: 33%;">(+|-) '.$variables2.' '.$unidad.'</td>
+						<td style="width: 33%;">(+|-) '.$exactitud.' '.$unidad.'</td>
 						<td style="width: 34%;">'.$unidad.'</td>
 					</tr>
 				</table><br>
@@ -692,10 +680,11 @@
 						<td style="width: 70%;">'.$descripcion.'</td>
 						<td style="width: 30%;">'.$marcaRef.'</td>
 					</tr>
-				</table><br><br><br>
+				</table>
 
-				<span style="">NR*: No Registra. NA*: No Aplica.</span>
+				<span style="bottom: 5px;">NR*: No Registra. NA*: No Aplica.</span>
 
+				
 			</div>
 			';
 		}
