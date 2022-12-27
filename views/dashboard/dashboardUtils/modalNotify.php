@@ -39,3 +39,12 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="modalFechas">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content text-center">
+            <h1 style="font-size: 4em;"><i class="mdi mdi-window-close text-danger"></i></h1>
+            <h4><strong>Error<strong><br> La fecha final debe ser mayor a la fecha inicial.</h5>
+        </div>
+    </div>
+</div>
